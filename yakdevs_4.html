@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>yakdevs</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #f5f3ef;
+      --ink: #16140f;
+      --muted: #8a8680;
+      --accent: #2e6b4f;
+      --accent2: #c8b560;
+      --accent-light: #e6ede9;
+      --border: #dedad4;
+      --card: #fafaf8;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      cursor: none;
+      overflow-x: hidden;
+    }
+
+    /* CURSOR */
+    .cursor { width:10px;height:10px;background:var(--accent);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transition:transform .15s ease; }
+    .cursor-ring { width:36px;height:36px;border:1.5px solid var(--accent);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;opacity:.4; }
+
+    /* NAV */
+    nav { position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:22px 64px;background:rgba(245,243,239,.9);backdrop-filter:blur(16px);z-index:100;border-bottom:1px solid transparent;transition:border-color .3s,padding .3s; }
+    nav.scrolled { border-color:var(--border);padding:16px 64px; }
+    .nav-logo { font-family:'DM Serif Display',serif;font-size:1.35rem;letter-spacing:-.02em;color:var(--ink);text-decoration:none; }
+    .nav-logo span { color:var(--accent); }
+    .nav-links { display:flex;gap:40px;list-style:none; }
+    .nav-links a { font-size:.82rem;font-weight:400;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s; }
+    .nav-links a:hover { color:var(--ink); }
+    .nav-cta { display:inline-flex;align-items:center;gap:8px;padding:9px 20px;border:1px solid var(--ink);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);text-decoration:none;transition:background .2s,color .2s; }
+    .nav-cta:hover { background:var(--ink);color:var(--bg); }
+
+    /* HERO */
+    .hero { min-height:100vh;padding:160px 64px 100px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;overflow:hidden; }
+    .hero-deco-letter { position:absolute;right:-60px;top:50%;transform:translateY(-54%);font-family:'DM Serif Display',serif;font-size:34vw;color:transparent;-webkit-text-stroke:1px rgba(46,107,79,.06);line-height:1;pointer-events:none;user-select:none;z-index:0; }
+    .hero-left { position:relative;z-index:1; }
+    .hero-eyebrow { display:inline-flex;align-items:center;gap:10px;font-size:.73rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:28px;opacity:0;animation:fadeUp .8s .2s forwards; }
+    .eyebrow-dot { width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse 2s 1s infinite; }
+    .hero-title { font-family:'DM Serif Display',serif;font-size:clamp(3.2rem,6.5vw,6.2rem);line-height:1.0;letter-spacing:-.03em;margin-bottom:8px;opacity:0;animation:fadeUp .9s .35s forwards; }
+    .hero-title em { font-style:italic;color:var(--accent); }
+    .hero-title .outline { -webkit-text-stroke:1.5px var(--ink);color:transparent; }
+    .hero-subtitle-row { display:flex;align-items:center;gap:16px;margin-bottom:36px;opacity:0;animation:fadeUp .9s .5s forwards; }
+    .hero-subtitle-line { flex:1;height:1px;background:var(--border); }
+    .hero-subtitle { font-size:.88rem;color:var(--muted);white-space:nowrap; }
+    .hero-desc { font-size:1.05rem;color:var(--muted);line-height:1.8;max-width:420px;margin-bottom:44px;opacity:0;animation:fadeUp .9s .65s forwards; }
+    .hero-actions { display:flex;align-items:center;gap:24px;opacity:0;animation:fadeUp .9s .8s forwards; }
+    .btn-primary { display:inline-flex;align-items:center;gap:10px;padding:14px 30px;background:var(--ink);color:var(--bg);font-size:.85rem;letter-spacing:.04em;text-decoration:none;transition:background .2s,gap .2s; }
+    .btn-primary:hover { background:var(--accent);gap:16px; }
+    .btn-ghost { display:inline-flex;align-items:center;gap:8px;font-size:.82rem;letter-spacing:.04em;color:var(--muted);text-decoration:none;transition:color .2s,gap .2s; }
+    .btn-ghost:hover { color:var(--ink);gap:14px; }
+
+    /* hero right card stack */
+    .hero-right { position:relative;z-index:1;display:flex;justify-content:flex-end;opacity:0;animation:fadeUp 1s .9s forwards; }
+    .hero-card-stack { position:relative;width:320px;height:400px; }
+    .hcard { position:absolute;border-radius:4px;background:var(--card);border:1px solid var(--border);padding:28px;box-shadow:0 8px 40px rgba(0,0,0,.06); }
+    .hcard-back { width:240px;top:16px;left:48px;background:var(--accent-light);border-color:rgba(46,107,79,.2);transform:rotate(6deg);z-index:0; }
+    .hcard-mid { width:264px;top:38px;left:24px;transform:rotate(-3deg);z-index:1; }
+    .hcard-front { width:290px;top:64px;left:0;z-index:2;transition:transform .3s ease,box-shadow .3s ease; }
+    .hcard-front:hover { transform:translateY(-10px) rotate(1deg);box-shadow:0 24px 60px rgba(0,0,0,.12); }
+    .hcard-tag { font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:14px; }
+    .hcard-name { font-family:'DM Serif Display',serif;font-size:1.7rem;letter-spacing:-.02em;margin-bottom:8px; }
+    .hcard-desc { font-size:.82rem;color:var(--muted);line-height:1.6; }
+    .hcard-footer { margin-top:20px;padding-top:16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between; }
+    .hcard-status { font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:6px; }
+    .hcard-status::before { content:'';display:inline-block;width:7px;height:7px;background:var(--accent);border-radius:50%; }
+
+    /* scroll hint */
+    .hero-scroll { position:absolute;bottom:40px;left:64px;display:flex;align-items:center;gap:12px;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);opacity:0;animation:fadeUp 1s 1.4s forwards; }
+    .scroll-line { width:40px;height:1px;background:var(--border);position:relative;overflow:hidden; }
+    .scroll-line::after { content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:var(--accent);animation:scrollMove 2s 2s infinite; }
+
+    /* MARQUEE */
+    .marquee-wrap { border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:18px 0;overflow:hidden;background:var(--ink); }
+    .marquee-track { display:flex;animation:marquee 20s linear infinite;width:max-content; }
+    .marquee-item { display:flex;align-items:center;gap:20px;padding:0 28px;font-family:'DM Serif Display',serif;font-size:1rem;color:rgba(255,255,255,.4);white-space:nowrap; }
+    .marquee-item span { color:var(--accent2);font-style:italic; }
+    .marquee-sep { width:4px;height:4px;background:var(--accent2);border-radius:50%;flex-shrink:0; }
+
+    /* APPS */
+    .apps-section { padding:120px 64px; }
+    .section-header { display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:64px; }
+    .section-label { font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:10px;margin-bottom:12px; }
+    .section-label::before { content:'';display:block;width:24px;height:1px;background:var(--accent); }
+    .section-title { font-family:'DM Serif Display',serif;font-size:clamp(2rem,3.5vw,2.8rem);letter-spacing:-.02em;line-height:1.1; }
+    .section-count { font-family:'DM Serif Display',serif;font-size:4rem;color:var(--border);letter-spacing:-.04em;line-height:1; }
+
+    .apps-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:2px; }
+    .app-card { background:var(--card);border:1px solid var(--border);padding:52px 48px 44px;text-decoration:none;color:inherit;display:block;position:relative;overflow:hidden;transition:border-color .3s,box-shadow .3s; }
+    .app-card::after { content:'';position:absolute;inset:0;background:radial-gradient(600px circle at var(--mx,50%) var(--my,50%),rgba(46,107,79,.06),transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none; }
+    .app-card:hover::after { opacity:1; }
+    .app-card::before { content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transform:scaleX(0);transform-origin:left;transition:transform .5s ease; }
+    .app-card:hover::before { transform:scaleX(1); }
+    .app-card:hover { border-color:rgba(46,107,79,.3);box-shadow:0 12px 48px rgba(0,0,0,.06); }
+    .app-top { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px; }
+    .app-number { font-family:'DM Serif Display',serif;font-size:2.6rem;color:var(--border);letter-spacing:-.04em;line-height:1; }
+    .app-badge { font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);background:var(--accent-light);padding:5px 14px;border-radius:100px; }
+    .app-name { font-family:'DM Serif Display',serif;font-size:2.8rem;letter-spacing:-.03em;line-height:1;margin-bottom:16px;transition:color .2s; }
+    .app-card:hover .app-name { color:var(--accent); }
+    .app-desc { font-size:.93rem;color:var(--muted);line-height:1.78;margin-bottom:36px; }
+    .app-tech { display:flex;gap:8px;flex-wrap:wrap;margin-bottom:36px; }
+    .tech-tag { font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--border);padding:4px 12px;color:var(--muted); }
+    .app-link { display:inline-flex;align-items:center;gap:10px;font-size:.8rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);transition:gap .2s,color .2s; }
+    .app-card:hover .app-link { gap:16px;color:var(--accent); }
+
+    /* ABOUT */
+    .about-section { background:var(--ink);color:var(--bg);padding:120px 64px;position:relative;overflow:hidden; }
+    .about-section::before { content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(46,107,79,.14),transparent 70%);pointer-events:none; }
+    .about-grid { display:grid;grid-template-columns:1fr 1.5fr;gap:100px;align-items:start;position:relative;z-index:1; }
+    .about-left .section-label { color:#5a9e7a; }
+    .about-left .section-label::before { background:#5a9e7a; }
+    .about-big-title { font-family:'DM Serif Display',serif;font-size:clamp(3rem,6vw,5.5rem);letter-spacing:-.04em;line-height:1.0; }
+    .about-big-title em { font-style:italic;color:#5a9e7a; }
+    .about-big-title .outline { -webkit-text-stroke:1.5px rgba(255,255,255,.25);color:transparent; }
+    .about-right { padding-top:8px; }
+    .about-body { font-size:1.05rem;line-height:1.9;color:#a8a49e;margin-bottom:48px; }
+    .about-body strong { color:#e8e4de;font-weight:400; }
+    .about-highlights { display:flex;flex-direction:column; }
+    .highlight-row { display:flex;align-items:center;gap:24px;padding:20px 0;border-bottom:1px solid rgba(255,255,255,.07); }
+    .highlight-row:first-child { border-top:1px solid rgba(255,255,255,.07); }
+    .highlight-num { font-family:'DM Serif Display',serif;font-size:1.7rem;color:#fff;min-width:52px; }
+    .highlight-text { font-size:.9rem;color:#6a6660;line-height:1.5; }
+    .highlight-text strong { color:#a8a49e;font-weight:400; }
+
+    /* CONTACT */
+    .contact-section { padding:120px 64px; }
+    .contact-grid { display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:start; }
+    .contact-left .section-title { font-size:clamp(2.2rem,4vw,3.5rem);margin-bottom:20px; }
+    .contact-desc { font-size:1rem;color:var(--muted);line-height:1.8;margin-bottom:44px; }
+    .contact-email-wrap { padding:28px 32px;border:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;text-decoration:none;color:var(--ink);transition:background .2s,border-color .2s,color .2s;margin-bottom:28px; }
+    .contact-email-wrap:hover { background:var(--ink);color:var(--bg);border-color:var(--ink); }
+    .contact-email-wrap:hover .email-label { color:rgba(255,255,255,.4); }
+    .contact-email-wrap:hover .email-arrow { transform:translateX(6px); }
+    .email-label { font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px; }
+    .email-text { font-family:'DM Serif Display',serif;font-size:1.2rem; }
+    .email-arrow { transition:transform .2s; }
+    .contact-socials { display:flex;gap:10px; }
+    .social-chip { display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border:1px solid var(--border);font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:border-color .2s,color .2s; }
+    .social-chip:hover { border-color:var(--ink);color:var(--ink); }
+
+    /* form */
+    .contact-right { display:flex;flex-direction:column; }
+    .form-row { display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:2px; }
+    .field { display:flex;flex-direction:column;background:var(--card);border:1px solid var(--border);padding:20px 24px 16px;transition:border-color .2s; }
+    .field:focus-within { border-color:var(--accent); }
+    .field label { font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px; }
+    .field input,.field textarea { background:none;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:.95rem;color:var(--ink);line-height:1.5;resize:none; }
+    .field input::placeholder,.field textarea::placeholder { color:var(--border); }
+    .field-full { grid-column:1/-1; }
+    .form-footer { display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-top:none;padding:20px 24px; }
+    .form-note { font-size:.78rem;color:var(--muted); }
+    .btn-send { display:inline-flex;align-items:center;gap:10px;padding:12px 28px;background:var(--ink);color:var(--bg);font-family:'DM Sans',sans-serif;font-size:.85rem;letter-spacing:.04em;border:none;cursor:none;transition:background .2s,gap .2s; }
+    .btn-send:hover { background:var(--accent);gap:16px; }
+
+    /* FOOTER */
+    footer { border-top:1px solid var(--border);padding:40px 64px;display:flex;justify-content:space-between;align-items:center; }
+    .footer-logo { font-family:'DM Serif Display',serif;font-size:1.1rem; }
+    .footer-logo span { color:var(--accent); }
+    .footer-right { display:flex;gap:40px;align-items:center; }
+    .footer-link { font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s; }
+    .footer-link:hover { color:var(--ink); }
+    .footer-copy { font-size:.78rem;color:var(--muted); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none} }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
+    @keyframes scrollMove { 0%{left:-100%}100%{left:100%} }
+    @keyframes marquee { 0%{transform:translateX(0)}100%{transform:translateX(-50%)} }
+    .reveal { opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease; }
+    .reveal.visible { opacity:1;transform:none; }
+    .reveal-d1 { transition-delay:.1s; }
+    .reveal-d2 { transition-delay:.22s; }
+    .reveal-d3 { transition-delay:.34s; }
+
+    @media(max-width:900px){
+      nav{padding:18px 24px}
+      .nav-links,.nav-cta{display:none}
+      .hero{grid-template-columns:1fr;padding:140px 24px 90px}
+      .hero-right,.hero-deco-letter{display:none}
+      .apps-section,.about-section,.contact-section{padding:80px 24px}
+      .apps-grid,.about-grid,.contact-grid{grid-template-columns:1fr;gap:2px}
+      .about-grid{gap:48px}
+      .contact-grid{gap:48px}
+      .section-header{flex-direction:column;align-items:flex-start;gap:4px}
+      .form-row{grid-template-columns:1fr}
+      footer{padding:28px 24px;flex-direction:column;gap:16px;text-align:center}
+      .footer-right{flex-direction:column;gap:12px}
+      .hero-scroll{left:24px}
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">yak<span>devs</span></a>
+  <ul class="nav-links">
+    <li><a href="#apps">Apps</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Get in touch <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M7 2l3 4-3 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-deco-letter">Y</div>
+
+  <div class="hero-left">
+    <div class="hero-eyebrow"><div class="eyebrow-dot"></div>Indie app developer · Open to work</div>
+    <h1 class="hero-title">
+      Building<br>
+      <em>apps</em> to<br>
+      <span class="outline">learn.</span>
+    </h1>
+    <div class="hero-subtitle-row">
+      <div class="hero-subtitle-line"></div>
+      <span class="hero-subtitle">yakdevs — indie app developer</span>
+    </div>
+    <p class="hero-desc">I'm a student who builds apps to grow as a developer. Every project is a chance to learn something new, ship something real, and get a little better at the craft.</p>
+    <div class="hero-actions">
+      <a href="#apps" class="btn-primary">See my apps <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <a href="#about" class="btn-ghost">About me <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-card-stack">
+      <div class="hcard hcard-back"></div>
+      <div class="hcard hcard-mid">
+        <div class="hcard-tag">App 02</div>
+        <div class="hcard-name">GrowthQuest</div>
+        <div class="hcard-desc">Level up your habits every day.</div>
+      </div>
+      <div class="hcard hcard-front">
+        <div class="hcard-tag">App 01</div>
+        <div class="hcard-name">Studxi</div>
+        <div class="hcard-desc">Your focused study companion. Built for students who want to do more in less time.</div>
+        <div class="hcard-footer">
+          <div class="hcard-status">Live now</div>
+          <span style="font-size:.72rem;color:var(--muted)">studxi.app</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    Scroll to explore
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track" id="marquee">
+    <div class="marquee-item"><span>Studxi</span><div class="marquee-sep"></div></div>
+    <div class="marquee-item">Study smarter<div class="marquee-sep"></div></div>
+    <div class="marquee-item"><span>GrowthQuest</span><div class="marquee-sep"></div></div>
+    <div class="marquee-item">Level up daily<div class="marquee-sep"></div></div>
+    <div class="marquee-item"><span>yakdevs</span><div class="marquee-sep"></div></div>
+    <div class="marquee-item">Building to learn<div class="marquee-sep"></div></div>
+    <div class="marquee-item"><span>Studxi</span><div class="marquee-sep"></div></div>
+    <div class="marquee-item">Study smarter<div class="marquee-sep"></div></div>
+    <div class="marquee-item"><span>GrowthQuest</span><div class="marquee-sep"></div></div>
+    <div class="marquee-item">Level up daily<div class="marquee-sep"></div></div>
+    <div class="marquee-item"><span>yakdevs</span><div class="marquee-sep"></div></div>
+    <div class="marquee-item">Building to learn<div class="marquee-sep"></div></div>
+  </div>
+</div>
+
+<!-- APPS -->
+<section class="apps-section" id="apps">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-label">My Apps</div>
+      <h2 class="section-title">Things I've<br>shipped.</h2>
+    </div>
+    <div class="section-count">02</div>
+  </div>
+  <div class="apps-grid">
+    <a href="studxi.html" class="app-card reveal">
+      <div class="app-top">
+        <div class="app-number">01</div>
+        <div class="app-badge">Live</div>
+      </div>
+      <div class="app-name">Studxi</div>
+      <p class="app-desc">A study companion built for students who want to stay focused and organised. Track sessions, set goals, and make every study block count.</p>
+      <div class="app-tech">
+        <span class="tech-tag">Productivity</span>
+        <span class="tech-tag">Students</span>
+        <span class="tech-tag">Focus</span>
+      </div>
+      <div class="app-link">Open app <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </a>
+    <a href="growthquest.html" class="app-card reveal reveal-d2">
+      <div class="app-top">
+        <div class="app-number">02</div>
+        <div class="app-badge">Live</div>
+      </div>
+      <div class="app-name">GrowthQuest</div>
+      <p class="app-desc">Personal growth turned into an adventure. Set goals, track habits, earn streaks, and level yourself up — one day at a time.</p>
+      <div class="app-tech">
+        <span class="tech-tag">Habits</span>
+        <span class="tech-tag">Goals</span>
+        <span class="tech-tag">Growth</span>
+      </div>
+      <div class="app-link">Open app <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </a>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-section" id="about">
+  <div class="about-grid">
+    <div class="about-left reveal">
+      <div class="section-label">About me</div>
+      <h2 class="about-big-title">Student.<br><em>Builder.</em><br><span class="outline">Learner.</span></h2>
+    </div>
+    <div class="about-right reveal reveal-d2">
+      <p class="about-body">
+        Hey — I'm <strong>yakdevs</strong>. I'm a student who got tired of just reading about building apps and decided to actually ship them. Every project I put out is me pushing my limits, figuring out how real software works, and making something I'm proud of.
+        <br><br>
+        I'm not a seasoned agency or a team of ten. It's just me, learning in public, building things I think are useful, and getting better every single day.
+      </p>
+      <div class="about-highlights">
+        <div class="highlight-row">
+          <div class="highlight-num">2</div>
+          <div class="highlight-text"><strong>Apps shipped</strong> and live for real users — not just concept projects.</div>
+        </div>
+        <div class="highlight-row">
+          <div class="highlight-num">∞</div>
+          <div class="highlight-text"><strong>Things still to learn.</strong> That's the whole point.</div>
+        </div>
+        <div class="highlight-row">
+          <div class="highlight-num">1</div>
+          <div class="highlight-text"><strong>Developer</strong> doing it all — design, code, and shipping.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="contact-grid">
+    <div class="contact-left reveal">
+      <div class="section-label">Contact</div>
+      <h2 class="section-title">Let's talk.</h2>
+      <p class="contact-desc">Have feedback on my apps, a collab idea, or just want to say hi? I'd love to hear from you.</p>
+      <a href="mailto:yakdevidk@gmail.com" class="contact-email-wrap">
+        <div>
+          <div class="email-label">Email me at</div>
+          <div class="email-text">yakdevidk@gmail.com</div>
+        </div>
+        <svg class="email-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+
+    </div>
+    <div class="contact-right reveal reveal-d2">
+      <div class="form-row">
+        <div class="field"><label>Name</label><input type="text" placeholder="Your name"/></div>
+        <div class="field"><label>Email</label><input type="email" placeholder="your@email.com"/></div>
+      </div>
+      <div class="form-row">
+        <div class="field field-full"><label>Subject</label><input type="text" placeholder="What's this about?"/></div>
+      </div>
+      <div class="form-row">
+        <div class="field field-full"><label>Message</label><textarea rows="5" placeholder="What's on your mind?"></textarea></div>
+      </div>
+      <div class="form-footer">
+        <span class="form-note">I'll reply within 24h ✦</span>
+        <button class="btn-send">Send message <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">yak<span>devs</span></div>
+  <div class="footer-right">
+    <a href="#apps" class="footer-link">Apps</a>
+    <a href="#about" class="footer-link">About</a>
+    <a href="#contact" class="footer-link">Contact</a>
+    <span class="footer-copy">© 2026 yakdevs</span>
+  </div>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{
+    mx=e.clientX; my=e.clientY;
+    cursor.style.left=mx-5+'px'; cursor.style.top=my-5+'px';
+  });
+  (function loop(){ rx+=(mx-rx-18)*.1; ry+=(my-ry-18)*.1; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(loop); })();
+  document.querySelectorAll('a,button').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{ cursor.style.transform='scale(2.5)'; ring.style.opacity='.15'; ring.style.transform='scale(1.8)'; });
+    el.addEventListener('mouseleave',()=>{ cursor.style.transform='scale(1)'; ring.style.opacity='.4'; ring.style.transform='scale(1)'; });
+  });
+
+  // Navbar scroll
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll',()=>navbar.classList.toggle('scrolled',scrollY>50));
+
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries=>entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); }),{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+  // App card radial hover
+  document.querySelectorAll('.app-card').forEach(card=>{
+    card.addEventListener('mousemove',e=>{ const r=card.getBoundingClientRect(); card.style.setProperty('--mx',e.clientX-r.left+'px'); card.style.setProperty('--my',e.clientY-r.top+'px'); });
+  });
+
+  // Duplicate marquee
+  const track = document.getElementById('marquee');
+  track.innerHTML += track.innerHTML;
+</script>
+</body>
+</html>
