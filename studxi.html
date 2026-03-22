@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StudXi – Study Planner & Attendance Tracker App</title>
+  <meta name="description" content="StudXi is a simple student planner to track attendance, manage tasks, timetable, and exams. Stay organized and stress-free."/>
+  <meta property="og:title" content="StudXi – Student Planner App"/>
+  <meta property="og:description" content="Track attendance, timetable & tasks easily"/>
+  <meta property="og:image" content="Frame_5.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --bg: #f0f4ff;
+      --ink: #0e1420;
+      --muted: #6b7280;
+      --accent: #3b6ef0;
+      --accent-dark: #2451c7;
+      --accent-light: #e8effe;
+      --green: #16a34a;
+      --green-light: #dcfce7;
+      --border: #e2e8f0;
+      --card: #ffffff;
+      --ink2: #1e293b;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-serif; font-weight: 300; line-height: 1.7; overflow-x: hidden; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: rgba(240,244,255,.92); backdrop-filter: blur(16px); border-bottom: 1px solid transparent; transition: border-color .3s, padding .3s; padding: 18px 64px; display: flex; align-items: center; justify-content: space-between; }
+    nav.scrolled { border-color: var(--border); padding: 14px 64px; }
+    .nav-logo { font-family: 'DM Serif Display', serif; font-size: 1.4rem; letter-spacing: -.02em; color: var(--ink); text-decoration: none; }
+    .nav-logo span { color: var(--accent); }
+    .nav-right { display: flex; align-items: center; gap: 20px; }
+    .nav-back { font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color .2s; display: inline-flex; align-items: center; gap: 6px; }
+    .nav-back:hover { color: var(--ink); }
+    .nav-back svg { transform: rotate(180deg); }
+    .nav-dl { display: inline-flex; align-items: center; gap: 8px; padding: 9px 20px; background: var(--accent); color: #fff; font-size: .8rem; font-weight: 500; letter-spacing: .04em; text-decoration: none; border-radius: 8px; transition: background .2s; }
+    .nav-dl:hover { background: var(--accent-dark); }
+
+    /* HERO */
+    .hero { min-height: 100vh; padding: 130px 64px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; position: relative; overflow: hidden; }
+    .hero-bg-blob { position: absolute; top: -100px; right: -200px; width: 700px; height: 700px; background: radial-gradient(circle, rgba(59,110,240,.12), transparent 65%); pointer-events: none; z-index: 0; }
+    .hero-bg-blob2 { position: absolute; bottom: -100px; left: -100px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(22,163,74,.08), transparent 65%); pointer-events: none; z-index: 0; }
+
+    .hero-left { position: relative; z-index: 1; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-light); color: var(--accent); font-size: .75rem; font-weight: 500; letter-spacing: .06em; padding: 6px 14px; border-radius: 100px; margin-bottom: 24px; opacity: 0; animation: fadeUp .7s .1s forwards; }
+    .badge-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+    .hero-title { font-family: 'DM Serif Display', serif; font-size: clamp(2.8rem, 5vw, 4.8rem); line-height: 1.05; letter-spacing: -.03em; margin-bottom: 20px; opacity: 0; animation: fadeUp .8s .25s forwards; }
+    .hero-title span { color: var(--accent); }
+    .hero-sub { font-size: 1.1rem; color: var(--muted); line-height: 1.75; max-width: 460px; margin-bottom: 40px; opacity: 0; animation: fadeUp .8s .4s forwards; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; opacity: 0; animation: fadeUp .8s .55s forwards; }
+    .btn-play { display: inline-flex; align-items: center; gap: 12px; padding: 14px 26px; background: var(--ink); color: #fff; border-radius: 10px; text-decoration: none; font-size: .95rem; font-weight: 500; transition: background .2s, transform .2s; }
+    .btn-play:hover { background: var(--accent); transform: translateY(-2px); }
+    .play-icon { width: 36px; height: 36px; background: rgba(255,255,255,.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .btn-play-text { display: flex; flex-direction: column; }
+    .btn-play-label { font-size: .65rem; opacity: .7; letter-spacing: .06em; text-transform: uppercase; }
+    .btn-play-store { font-size: 1rem; font-weight: 600; letter-spacing: -.01em; }
+    .btn-learn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 24px; border: 1.5px solid var(--border); color: var(--ink); border-radius: 10px; text-decoration: none; font-size: .9rem; transition: border-color .2s, background .2s; }
+    .btn-learn:hover { border-color: var(--accent); background: var(--accent-light); }
+
+    .hero-stats { display: flex; gap: 32px; margin-top: 44px; opacity: 0; animation: fadeUp .8s .7s forwards; }
+    .hstat { }
+    .hstat-num { font-family: 'DM Serif Display', serif; font-size: 1.8rem; color: var(--ink); letter-spacing: -.02em; line-height: 1; }
+    .hstat-label { font-size: .75rem; color: var(--muted); letter-spacing: .04em; }
+
+    .hero-right { position: relative; z-index: 1; display: flex; justify-content: center; opacity: 0; animation: fadeUp 1s .6s forwards; }
+    .hero-img-wrap { position: relative; }
+    .hero-img-wrap img { width: 300px; border-radius: 24px; box-shadow: 0 32px 80px rgba(59,110,240,.18), 0 8px 24px rgba(0,0,0,.08); }
+    .hero-float-badge { position: absolute; bottom: 60px; left: -50px; background: #fff; border-radius: 12px; padding: 12px 16px; box-shadow: 0 8px 32px rgba(0,0,0,.1); display: flex; align-items: center; gap: 10px; font-size: .82rem; font-weight: 500; white-space: nowrap; }
+    .float-dot { width: 10px; height: 10px; background: var(--green); border-radius: 50%; }
+    .hero-float-badge2 { position: absolute; top: 40px; right: -40px; background: #fff; border-radius: 12px; padding: 10px 14px; box-shadow: 0 8px 32px rgba(0,0,0,.08); font-size: .78rem; font-weight: 500; color: var(--accent); }
+
+    /* SECTION COMMONS */
+    .section { padding: 100px 64px; }
+    .section-alt { background: var(--card); }
+    .section-dark { background: var(--ink2); color: #fff; }
+    .label-tag { display: inline-flex; align-items: center; gap: 8px; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+    .label-tag::before { content: ''; display: block; width: 20px; height: 1.5px; background: var(--accent); }
+    .section-title { font-family: 'DM Serif Display', serif; font-size: clamp(1.9rem, 3.5vw, 2.8rem); letter-spacing: -.025em; line-height: 1.1; margin-bottom: 16px; }
+    .section-body { font-size: 1rem; color: var(--muted); line-height: 1.8; max-width: 560px; }
+    .center { text-align: center; }
+    .center .section-body { margin: 0 auto; }
+    .center .label-tag { justify-content: center; }
+    .center .label-tag::before { display: none; }
+
+    /* PROBLEM */
+    .problem-section { padding: 100px 64px; }
+    .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .problem-points { display: flex; flex-direction: column; gap: 20px; margin-top: 36px; }
+    .problem-point { display: flex; gap: 16px; align-items: flex-start; }
+    .prob-icon { width: 40px; height: 40px; border-radius: 10px; background: #fff3f3; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.1rem; }
+    .prob-text { }
+    .prob-title { font-weight: 500; font-size: .95rem; margin-bottom: 2px; }
+    .prob-desc { font-size: .88rem; color: var(--muted); line-height: 1.6; }
+    .problem-visual { display: flex; justify-content: center; }
+    .problem-visual img { width: 260px; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,.1); }
+
+    /* FEATURES */
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 56px; }
+    .feat-card { background: var(--card); padding: 36px 32px; border: 1px solid var(--border); transition: border-color .2s, box-shadow .2s; }
+    .feat-card:hover { border-color: var(--accent); box-shadow: 0 8px 32px rgba(59,110,240,.08); }
+    .feat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; font-size: 1.3rem; }
+    .feat-name { font-family: 'DM Serif Display', serif; font-size: 1.15rem; margin-bottom: 8px; }
+    .feat-desc { font-size: .88rem; color: var(--muted); line-height: 1.7; }
+
+    /* SCREENSHOTS */
+    .screenshots-section { padding: 100px 64px; overflow: hidden; }
+    .screenshots-scroll { display: flex; gap: 24px; margin-top: 56px; overflow-x: auto; padding-bottom: 20px; scrollbar-width: none; scroll-snap-type: x mandatory; }
+    .screenshots-scroll::-webkit-scrollbar { display: none; }
+    .screenshot-item { flex-shrink: 0; scroll-snap-align: start; }
+    .screenshot-item img { width: 220px; border-radius: 20px; box-shadow: 0 16px 48px rgba(0,0,0,.1); display: block; }
+    .screenshot-cap { font-size: .8rem; color: var(--muted); text-align: center; margin-top: 12px; letter-spacing: .02em; }
+
+    /* BENEFITS */
+    .benefits-section { padding: 100px 64px; background: var(--ink2); color: #fff; }
+    .benefits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .benefits-list { display: flex; flex-direction: column; gap: 16px; margin-top: 36px; }
+    .benefit-row { display: flex; align-items: center; gap: 14px; padding: 16px 20px; background: rgba(255,255,255,.05); border-radius: 10px; border: 1px solid rgba(255,255,255,.07); }
+    .benefit-check { width: 28px; height: 28px; background: rgba(22,163,74,.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .benefit-text { font-size: .92rem; color: #cbd5e1; }
+    .benefits-right { display: flex; justify-content: center; }
+    .benefits-right img { width: 240px; border-radius: 20px; box-shadow: 0 24px 64px rgba(0,0,0,.3); }
+
+    /* WHO */
+    .who-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 56px; }
+    .who-card { background: var(--card); border: 1px solid var(--border); padding: 36px 32px; text-align: center; }
+    .who-emoji { font-size: 2.4rem; margin-bottom: 16px; }
+    .who-title { font-family: 'DM Serif Display', serif; font-size: 1.2rem; margin-bottom: 8px; }
+    .who-desc { font-size: .88rem; color: var(--muted); line-height: 1.6; }
+
+    /* PRIVACY */
+    .privacy-section { padding: 80px 64px; background: var(--accent-light); }
+    .privacy-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .privacy-icon { font-size: 3rem; margin-bottom: 20px; }
+    .privacy-body { font-size: 1rem; color: var(--muted); line-height: 1.8; margin-bottom: 28px; }
+    .btn-outline-accent { display: inline-flex; align-items: center; gap: 8px; padding: 11px 22px; border: 1.5px solid var(--accent); color: var(--accent); border-radius: 8px; font-size: .88rem; font-weight: 500; text-decoration: none; transition: background .2s, color .2s; }
+    .btn-outline-accent:hover { background: var(--accent); color: #fff; }
+    .privacy-points { display: flex; flex-direction: column; gap: 14px; }
+    .privacy-point { display: flex; align-items: center; gap: 12px; font-size: .92rem; color: var(--ink2); }
+    .privacy-point::before { content: '🔒'; font-size: .9rem; }
+
+    /* DOWNLOAD CTA */
+    .download-section { padding: 100px 64px; background: var(--accent); color: #fff; text-align: center; position: relative; overflow: hidden; }
+    .download-section::before { content: ''; position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(255,255,255,.1), transparent 65%); pointer-events: none; }
+    .download-section .section-title { color: #fff; margin-bottom: 12px; }
+    .download-section .section-body { color: rgba(255,255,255,.75); margin: 0 auto 40px; }
+    .dl-buttons { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+
+    /* CONTACT */
+    .contact-section { padding: 100px 64px; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .contact-email-box { display: flex; align-items: center; justify-content: space-between; padding: 24px 28px; border: 1.5px solid var(--border); border-radius: 10px; text-decoration: none; color: var(--ink); margin-bottom: 20px; transition: border-color .2s, background .2s; }
+    .contact-email-box:hover { border-color: var(--accent); background: var(--accent-light); }
+    .contact-email-label { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .contact-email-text { font-family: 'DM Serif Display', serif; font-size: 1.1rem; }
+    .form-stack { display: flex; flex-direction: column; gap: 2px; }
+    .field { background: var(--card); border: 1.5px solid var(--border); padding: 16px 20px; display: flex; flex-direction: column; gap: 4px; transition: border-color .2s; }
+    .field:focus-within { border-color: var(--accent); }
+    .field label { font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    .field input, .field textarea { background: none; border: none; outline: none; font-family: 'DM Sans', sans-serif; font-size: .95rem; color: var(--ink); resize: none; }
+    .field input::placeholder, .field textarea::placeholder { color: #cbd5e1; }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .form-submit-row { background: var(--card); border: 1.5px solid var(--border); border-top: none; padding: 16px 20px; display: flex; justify-content: flex-end; }
+    .btn-send { background: var(--accent); color: #fff; border: none; padding: 11px 26px; font-family: 'DM Sans', sans-serif; font-size: .88rem; font-weight: 500; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: background .2s; }
+    .btn-send:hover { background: var(--accent-dark); }
+
+    /* FOOTER */
+    footer { background: var(--ink); color: rgba(255,255,255,.5); padding: 40px 64px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+    .footer-logo { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: #fff; }
+    .footer-logo span { color: var(--accent); }
+    .footer-links { display: flex; gap: 28px; flex-wrap: wrap; }
+    .footer-link { font-size: .78rem; letter-spacing: .05em; color: rgba(255,255,255,.4); text-decoration: none; transition: color .2s; }
+    .footer-link:hover { color: #fff; }
+    .footer-copy { font-size: .75rem; }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none} }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity .7s ease,transform .7s ease; }
+    .reveal.visible { opacity:1; transform:none; }
+    .reveal-d1{transition-delay:.1s} .reveal-d2{transition-delay:.2s} .reveal-d3{transition-delay:.3s} .reveal-d4{transition-delay:.4s} .reveal-d5{transition-delay:.5s}
+
+    @media(max-width:900px){
+      nav{padding:16px 24px}
+      .nav-back span{display:none}
+      .hero{grid-template-columns:1fr;padding:120px 24px 60px;gap:40px}
+      .hero-float-badge,.hero-float-badge2{display:none}
+      .hero-img-wrap img{width:240px}
+      .section,.problem-section,.benefits-section,.privacy-section,.download-section,.contact-section,.screenshots-section{padding:70px 24px}
+      .features-grid,.who-grid{grid-template-columns:1fr}
+      .problem-grid,.benefits-grid,.privacy-inner,.contact-grid{grid-template-columns:1fr;gap:40px}
+      .problem-visual,.benefits-right{display:none}
+      footer{padding:28px 24px;flex-direction:column;text-align:center}
+      .hero-stats{gap:20px}
+      .form-row-2{grid-template-columns:1fr}
+      nav.scrolled{padding:12px 24px}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">Stud<span>Xi</span></a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>yakdevs</span>
+    </a>
+    <a href="#download" class="nav-dl">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v7M4 6l3 3 3-3M2 10v1a1 1 0 001 1h8a1 1 0 001-1v-1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-blob"></div>
+  <div class="hero-bg-blob2"></div>
+
+  <div class="hero-left">
+    <div class="hero-badge"><div class="badge-dot"></div> All-in-one Student Planner</div>
+    <h1 class="hero-title">StudXi – <span>Smart Study</span> Planner for Students</h1>
+    <p class="hero-sub">Track attendance, manage tasks, and plan your timetable — all in one simple app.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-play">
+        <div class="play-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M3.18 23.36C1.98 22.7 1 21.14 1 19.8V4.2C1 2.86 1.98 1.3 3.18.64l16.36 11.36L3.18 23.36z"/></svg>
+        </div>
+        <div class="btn-play-text">
+          <span class="btn-play-label">Download on</span>
+          <span class="btn-play-store">Google Play</span>
+        </div>
+      </a>
+      <a href="#features" class="btn-learn">Learn More <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-num">5</div><div class="hstat-label">Core features</div></div>
+      <div class="hstat"><div class="hstat-num">100%</div><div class="hstat-label">Free</div></div>
+      <div class="hstat"><div class="hstat-num">0</div><div class="hstat-label">Ads</div></div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-img-wrap">
+      <img src="Frame_5.png" alt="StudXi App Overview"/>
+      <div class="hero-float-badge"><div class="float-dot"></div> Smart Attendance Tracker</div>
+      <div class="hero-float-badge2">✅ Free & No Ads</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem-section section-alt">
+  <div class="problem-grid">
+    <div class="reveal">
+      <div class="label-tag">The Problem</div>
+      <h2 class="section-title">Struggling to Stay Organized?</h2>
+      <p class="section-body">Keeping track of attendance, assignments, and class schedules can be overwhelming. Many students miss important deadlines or fall short of attendance requirements without even realizing it.</p>
+      <div class="problem-points">
+        <div class="problem-point">
+          <div class="prob-icon">😓</div>
+          <div class="prob-text">
+            <div class="prob-title">Missing attendance targets</div>
+            <div class="prob-desc">Students lose track of how many classes they've attended until it's too late.</div>
+          </div>
+        </div>
+        <div class="problem-point">
+          <div class="prob-icon">📚</div>
+          <div class="prob-text">
+            <div class="prob-title">Forgotten assignments & deadlines</div>
+            <div class="prob-desc">Tasks pile up and important due dates get missed without a clear system.</div>
+          </div>
+        </div>
+        <div class="problem-point">
+          <div class="prob-icon">😰</div>
+          <div class="prob-text">
+            <div class="prob-title">Last-minute exam stress</div>
+            <div class="prob-desc">No study plan means cramming the night before and poor performance.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="problem-visual reveal reveal-d2">
+      <img src="atte.png" alt="Attendance Tracking"/>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section class="section reveal">
+  <div class="center">
+    <div class="label-tag">The Solution</div>
+    <h2 class="section-title">StudXi Makes It Simple</h2>
+    <p class="section-body">StudXi is designed to help students stay organized, focused, and stress-free. Everything you need — attendance tracking, task management, and timetable planning — in one place.</p>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section section-alt" id="features">
+  <div class="reveal center">
+    <div class="label-tag">Features</div>
+    <h2 class="section-title">Everything You Need to Excel</h2>
+  </div>
+  <div class="features-grid">
+    <div class="feat-card reveal reveal-d1">
+      <div class="feat-icon" style="background:#eff6ff">📊</div>
+      <div class="feat-name">Attendance Tracking</div>
+      <p class="feat-desc">Track subject-wise attendance easily and always know your percentage. Stay aware of how many classes you can safely miss — the app calculates it for you.</p>
+    </div>
+    <div class="feat-card reveal reveal-d2">
+      <div class="feat-icon" style="background:#f0fdf4">✅</div>
+      <div class="feat-name">Task Management</div>
+      <p class="feat-desc">Add daily study tasks and assignments. Set priorities (High, Medium, Low) and stay productive with a clean, simple to-do list that keeps you on track.</p>
+    </div>
+    <div class="feat-card reveal reveal-d3">
+      <div class="feat-icon" style="background:#faf5ff">📅</div>
+      <div class="feat-name">Weekly Timetable</div>
+      <p class="feat-desc">Organize your weekly class timetable. Quickly check what class comes next and never miss a lecture. Syncs directly with your attendance tracker.</p>
+    </div>
+    <div class="feat-card reveal reveal-d1">
+      <div class="feat-icon" style="background:#fff7ed">📝</div>
+      <div class="feat-name">Exam & Study Planning</div>
+      <p class="feat-desc">Keep track of upcoming exams. Plan your study schedule in advance and reduce last-minute stress with a clear overview of what's coming up.</p>
+    </div>
+    <div class="feat-card reveal reveal-d2">
+      <div class="feat-icon" style="background:#fef2f2">⏱️</div>
+      <div class="feat-name">Built-in Study Timer</div>
+      <p class="feat-desc">Stay focused with a simple study timer. Choose from 25, 45, 60, or 90 minute sessions. Build consistent study habits and track your total study time.</p>
+    </div>
+    <div class="feat-card reveal reveal-d3">
+      <div class="feat-icon" style="background:#f0fdf4">🏠</div>
+      <div class="feat-name">Productivity Hub</div>
+      <p class="feat-desc">Your central dashboard shows your productivity score, overall attendance, priority tasks, and quick actions — everything at a glance when you open the app.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SCREENSHOTS -->
+<section class="screenshots-section reveal">
+  <div class="center">
+    <div class="label-tag">App Screenshots</div>
+    <h2 class="section-title">See It in Action</h2>
+  </div>
+  <div class="screenshots-scroll">
+    <div class="screenshot-item">
+      <img src="Frame_5.png" alt="StudXi Overview"/>
+      <div class="screenshot-cap">All-in-one Student Planner</div>
+    </div>
+    <div class="screenshot-item">
+      <img src="atte.png" alt="Attendance Tracker"/>
+      <div class="screenshot-cap">Never miss your attendance target</div>
+    </div>
+    <div class="screenshot-item">
+      <img src="Frame_2.png" alt="Task Management"/>
+      <div class="screenshot-cap">Manage tasks by priority</div>
+    </div>
+    <div class="screenshot-item">
+      <img src="Frame_3.png" alt="Weekly Timetable"/>
+      <div class="screenshot-cap">Plan your week in seconds</div>
+    </div>
+    <div class="screenshot-item">
+      <img src="Frame_4.png" alt="Study Timer"/>
+      <div class="screenshot-cap">Stay focused with study timer</div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+<section class="benefits-section">
+  <div class="benefits-grid">
+    <div class="reveal">
+      <div class="label-tag" style="color:#60a5fa"><span style="display:inline-block;width:20px;height:1.5px;background:#60a5fa;margin-right:8px;vertical-align:middle"></span>Why StudXi</div>
+      <h2 class="section-title" style="color:#fff">Why Students Choose StudXi</h2>
+      <div class="benefits-list">
+        <div class="benefit-row"><div class="benefit-check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="benefit-text">Stay above required attendance percentage</div></div>
+        <div class="benefit-row"><div class="benefit-check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="benefit-text">Avoid last-minute exam stress</div></div>
+        <div class="benefit-row"><div class="benefit-check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="benefit-text">Manage tasks without confusion</div></div>
+        <div class="benefit-row"><div class="benefit-check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="benefit-text">Simple and beginner-friendly interface</div></div>
+        <div class="benefit-row"><div class="benefit-check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="benefit-text">Lightweight and fast performance</div></div>
+        <div class="benefit-row"><div class="benefit-check"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="benefit-text">100% free — no hidden charges</div></div>
+      </div>
+    </div>
+    <div class="benefits-right reveal reveal-d2">
+      <img src="Frame_4.png" alt="Study Timer"/>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IS THIS FOR -->
+<section class="section">
+  <div class="reveal center">
+    <div class="label-tag">Who It's For</div>
+    <h2 class="section-title">Built for Students</h2>
+    <p class="section-body">Whether you're in school, college, or just want a simple academic planner — StudXi is made for you.</p>
+  </div>
+  <div class="who-grid">
+    <div class="who-card reveal reveal-d1">
+      <div class="who-emoji">🏫</div>
+      <div class="who-title">School Students</div>
+      <p class="who-desc">Keep track of classes, homework, and exams without any stress. Stay ahead of your schedule.</p>
+    </div>
+    <div class="who-card reveal reveal-d2">
+      <div class="who-emoji">🎓</div>
+      <div class="who-title">College Students</div>
+      <p class="who-desc">Monitor attendance targets, manage assignments across subjects, and plan your week smartly.</p>
+    </div>
+    <div class="who-card reveal reveal-d3">
+      <div class="who-emoji">📖</div>
+      <div class="who-title">Anyone Who Wants to Learn</div>
+      <p class="who-desc">Perfect for anyone who wants a simple, clean academic planner without the bloat of complex apps.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRIVACY -->
+<section class="privacy-section">
+  <div class="privacy-inner">
+    <div class="reveal">
+      <div class="privacy-icon">🔒</div>
+      <div class="label-tag">Privacy</div>
+      <h2 class="section-title">Privacy First</h2>
+      <p class="privacy-body">StudXi respects your privacy. All your data — attendance, tasks, and schedules — are stored locally on your device. We do not collect or share any personal information.</p>
+      <a href="privacy-policy.html" class="btn-outline-accent">View Privacy Policy</a>
+    </div>
+    <div class="privacy-points reveal reveal-d2">
+      <div class="privacy-point">All data stored locally on your device</div>
+      <div class="privacy-point">No personal data collected</div>
+      <div class="privacy-point">No account or sign-up required</div>
+      <div class="privacy-point">No internet required to use the app</div>
+      <div class="privacy-point">No ads or tracking</div>
+      <div class="privacy-point">Your data stays yours, always</div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD CTA -->
+<section class="download-section" id="download">
+  <div class="reveal">
+    <div class="label-tag" style="color:rgba(255,255,255,.7);justify-content:center"><span style="display:inline-block;width:20px;height:1.5px;background:rgba(255,255,255,.5);margin-right:8px;vertical-align:middle"></span>Get Started</div>
+    <h2 class="section-title">Take Control of Your Academic Life</h2>
+    <p class="section-body">Download StudXi today and start planning smarter. It's free, it's simple, and it's built just for students like you.</p>
+    <div class="dl-buttons">
+      <a href="#" class="btn-play" style="background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3)">
+        <div class="play-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M3.18 23.36C1.98 22.7 1 21.14 1 19.8V4.2C1 2.86 1.98 1.3 3.18.64l16.36 11.36L3.18 23.36z"/></svg>
+        </div>
+        <div class="btn-play-text">
+          <span class="btn-play-label">Download on</span>
+          <span class="btn-play-store">Google Play</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="contact-grid">
+    <div class="reveal">
+      <div class="label-tag">Contact</div>
+      <h2 class="section-title">Have Questions?</h2>
+      <p class="section-body" style="margin-bottom:32px">Have feedback on the app, found a bug, or just want to say hi? I'd love to hear from you.</p>
+      <a href="mailto:yakdevidk@gmail.com" class="contact-email-box">
+        <div>
+          <div class="contact-email-label">Email us at</div>
+          <div class="contact-email-text">yakdevidk@gmail.com</div>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+    <div class="reveal reveal-d2">
+      <div class="form-stack">
+        <div class="form-row-2">
+          <div class="field"><label>Name</label><input type="text" placeholder="Your name"/></div>
+          <div class="field"><label>Email</label><input type="email" placeholder="your@email.com"/></div>
+        </div>
+        <div class="field"><label>Message</label><textarea rows="5" placeholder="Your feedback or question..."></textarea></div>
+        <div class="form-submit-row">
+          <button class="btn-send">Send <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Stud<span>Xi</span></div>
+  <div class="footer-links">
+    <a href="privacy-policy.html" class="footer-link">Privacy Policy</a>
+    <a href="#" class="footer-link">Terms of Service</a>
+    <a href="index.html" class="footer-link">yakdevs</a>
+  </div>
+  <div class="footer-copy">© 2026 YAK Devs. All rights reserved.</div>
+</footer>
+
+<script>
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', scrollY > 50));
+  const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }), {threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
