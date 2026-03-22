@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Privacy Policy – GrowthQuest</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --bg: #f5f3ef;
+      --ink: #16140f;
+      --muted: #8a8680;
+      --accent: #8b4a1e;
+      --accent2: #c8b560;
+      --accent-light: #f0e8e0;
+      --border: #dedad4;
+      --card: #fafaf8;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-serif; font-weight: 300; line-height: 1.7; }
+
+    nav { position: fixed; top:0; left:0; right:0; z-index:100; background: rgba(245,243,239,.92); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); padding: 18px 64px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { font-family: 'DM Serif Display', serif; font-size: 1.35rem; letter-spacing: -.02em; color: var(--ink); text-decoration: none; }
+    .nav-logo span { color: var(--accent); }
+    .nav-back { display: inline-flex; align-items: center; gap: 8px; font-size: .82rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color .2s; }
+    .nav-back:hover { color: var(--ink); }
+    .nav-back svg { transform: rotate(180deg); }
+
+    .page-wrap { max-width: 780px; margin: 0 auto; padding: 140px 40px 100px; }
+
+    .page-header { margin-bottom: 56px; padding-bottom: 40px; border-bottom: 1px solid var(--border); }
+    .page-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-light); color: var(--accent); font-size: .72rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; padding: 6px 14px; border-radius: 100px; margin-bottom: 20px; }
+    .page-title { font-family: 'DM Serif Display', serif; font-size: clamp(2.4rem, 5vw, 3.6rem); letter-spacing: -.03em; line-height: 1.05; margin-bottom: 14px; }
+    .page-title span { color: var(--accent); font-style: italic; }
+    .page-meta { font-size: .88rem; color: var(--muted); }
+
+    .policy-body { display: flex; flex-direction: column; gap: 0; }
+    .policy-section { padding: 36px 0; border-bottom: 1px solid var(--border); }
+    .policy-section:last-child { border-bottom: none; }
+    .section-num { font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+    .section-heading { font-family: 'DM Serif Display', serif; font-size: 1.4rem; letter-spacing: -.01em; margin-bottom: 16px; }
+    .policy-text { font-size: .95rem; color: var(--muted); line-height: 1.85; margin-bottom: 16px; }
+    .policy-text:last-child { margin-bottom: 0; }
+    .policy-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+    .policy-list li { display: flex; align-items: flex-start; gap: 10px; font-size: .93rem; color: var(--muted); line-height: 1.6; }
+    .policy-list li::before { content: ''; display: block; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; margin-top: 8px; flex-shrink: 0; }
+
+    .highlight-box { background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--accent); padding: 20px 24px; border-radius: 0 8px 8px 0; margin: 16px 0; }
+    .highlight-box-title { font-weight: 500; font-size: .9rem; color: var(--ink); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .highlight-box-body { font-size: .88rem; color: var(--muted); line-height: 1.7; }
+    .highlight-box-body a { color: var(--accent); text-decoration: none; }
+    .highlight-box-body a:hover { text-decoration: underline; }
+
+    .contact-box { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 28px 32px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: var(--ink); transition: border-color .2s, background .2s; margin-top: 16px; }
+    .contact-box:hover { border-color: var(--accent); background: var(--accent-light); }
+    .contact-box-label { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .contact-box-email { font-family: 'DM Serif Display', serif; font-size: 1.15rem; }
+
+    .agree-box { background: var(--ink); color: #fff; border-radius: 10px; padding: 28px 32px; margin-top: 48px; text-align: center; }
+    .agree-box p { font-size: .92rem; color: rgba(255,255,255,.7); line-height: 1.7; }
+    .agree-box strong { color: #fff; font-weight: 500; }
+
+    .tagline { text-align: center; padding: 32px 0 0; font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--muted); font-style: italic; }
+
+    footer { border-top: 1px solid var(--border); padding: 32px 64px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-logo { font-family: 'DM Serif Display', serif; font-size: 1rem; }
+    .footer-logo span { color: var(--accent); }
+    .footer-copy { font-size: .75rem; color: var(--muted); }
+    .footer-back { font-size: .78rem; letter-spacing: .05em; color: var(--muted); text-decoration: none; transition: color .2s; }
+    .footer-back:hover { color: var(--ink); }
+
+    @media(max-width:700px){
+      nav { padding: 16px 24px; }
+      .page-wrap { padding: 110px 24px 80px; }
+      footer { padding: 24px; flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="growthquest.html" class="nav-logo">Growth<span>Quest</span></a>
+  <a href="growthquest.html" class="nav-back">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back to GrowthQuest
+  </a>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-header">
+    <div class="page-badge">🔒 Legal</div>
+    <h1 class="page-title">Privacy Policy<br>for <span>GrowthQuest</span></h1>
+    <p class="page-meta">Effective Date: March 22, 2026</p>
+  </div>
+
+  <div class="policy-body">
+
+    <div class="policy-section">
+      <p class="policy-text">Thank you for using GrowthQuest. This Privacy Policy explains how we handle your information when you use our habit tracking application. We are committed to protecting your privacy and being transparent about our practices.</p>
+    </div>
+
+    <div class="policy-section">
+      <div class="section-num">Section 1</div>
+      <h2 class="section-heading">Information We Collect</h2>
+      <p class="policy-text">GrowthQuest is designed with your privacy in mind. We do not collect, store, or transmit any personal information to external servers. All data you enter in the app is stored locally on your device only.</p>
+      <p class="policy-text">Data stored locally on your device includes:</p>
+      <ul class="policy-list">
+        <li>Habit names, icons, and colors you create</li>
+        <li>Daily habit completion records</li>
+        <li>Streak counts and XP points</li>
+        <li>Level and badge progress</li>
+        <li>App settings and preferences (including dark mode)</li>
+        <li>Reminder notification times</li>
+      </ul>
+    </div>
+
+    <div class="policy-section">
+      <div class="section-num">Section 2</div>
+      <h2 class="section-heading">Information We Do NOT Collect</h2>
+      <p class="policy-text">GrowthQuest does not collect any of the following:</p>
+      <ul class="policy-list">
+        <li>Your name, email address, or any account information</li>
+        <li>Location data</li>
+        <li>Device identifiers or unique hardware IDs</li>
+        <li>Usage analytics or behavioral tracking</li>
+        <li>Any data from your contacts, camera, or microphone</li>
+      </ul>
+    </div>
+
+    <div class="policy-section">
+      <div class="section-num">Section 3</div>
+      <h2 class="section-heading">Third-Party Advertising (Google AdMob)</h2>
+      <p class="policy-text">GrowthQuest displays banner advertisements provided by Google AdMob. Google AdMob may collect certain information to serve relevant ads. This may include:</p>
+      <ul class="policy-list">
+        <li>Advertising ID (a resettable device identifier)</li>
+        <li>IP address</li>
+        <li>Device type and operating system version</li>
+        <li>General location (country/region level only)</li>
+      </ul>
+      <div class="highlight-box">
+        <div class="highlight-box-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#8b4a1e" stroke-width="1.5"/><path d="M8 12h8M12 8v8" stroke="#8b4a1e" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Google AdMob
+        </div>
+        <div class="highlight-box-body">
+          This data collection is governed by Google's Privacy Policy. You can opt out of personalized ads by adjusting your device settings under Google Settings → Ads.
+          <br/><br/>
+          Learn more: <a href="https://policies.google.com/privacy" target="_blank">https://policies.google.com/privacy</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="policy-section">
+      <div class="section-num">Section 4</div>
+      <h2 class="section-heading">Notifications</h2>
+      <p class="policy-text">GrowthQuest may send you local push notifications to remind you to complete your habits. These notifications are scheduled entirely on your device and do not involve any external servers. You can disable notifications at any time through your device settings.</p>
+    </div>
+
+    <div class="policy-section">
+      <div class="section-num">Section 5</div>
+      <h2 class="section-heading">Data Storage and Security</h2>
+      <p class="policy-text">All your habit data is stored locally on your device using secure local storage. We do not have access to your data, and your data is never transmitted to our servers or any third party (except as described in Section 3 regarding AdMob).</p>
+      <p class="policy-text">If you uninstall GrowthQuest, all locally stored data will be permanently deleted.</p>
+    </div>
+
+    <div class="policy-section">
+      <div class="section-num">Section 6</div>
+      <h2 class="section-heading">Children's Privacy</h2>
+      <p class="policy-text">GrowthQuest is not directed at children under the age of 13. We do not knowingly collect personal information from children. Since we do not collect any personal information from any users, this app is safe for general audiences.</p>
+    </div>
+
+    <div class="policy-section">
+      <div class="section-num">Section 7</div>
+      <h2 class="section-heading">Changes to This Privacy Policy</h2>
+      <p class="policy-text">We may update this Privacy Policy from time to time. Any changes will be reflected with an updated effective date at the top of this document. We encourage you to review this policy periodically. Continued use of GrowthQuest after any changes constitutes your acceptance of the updated policy.</p>
+    </div>
+
+    <div class="policy-section">
+      <div class="section-num">Section 8</div>
+      <h2 class="section-heading">Contact Us</h2>
+      <p class="policy-text">If you have any questions or concerns about this Privacy Policy, please contact us at:</p>
+      <a href="mailto:yakdevidk@gmail.com" class="contact-box">
+        <div>
+          <div class="contact-box-label">📧 Email us at</div>
+          <div class="contact-box-email">yakdevidk@gmail.com</div>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+  </div>
+
+  <div class="agree-box">
+    <p><strong>By using GrowthQuest, you agree to this Privacy Policy.</strong><br/>If you do not agree with any part of this policy, please discontinue use of the app.</p>
+  </div>
+
+  <div class="tagline">GrowthQuest — Build Better Habits, Level Up Your Life 🌱</div>
+
+</div>
+
+<footer>
+  <div class="footer-logo">Growth<span>Quest</span></div>
+  <a href="growthquest.html" class="footer-back">← Back to GrowthQuest</a>
+  <div class="footer-copy">© 2026 YAK Devs. All rights reserved.</div>
+</footer>
+
+</body>
+</html>
