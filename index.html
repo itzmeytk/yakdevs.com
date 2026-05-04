@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>YakDevs – Building Smart Apps for Students</title>
+  <meta name="description" content="YakDevs builds smart, gamified apps for students. Explore StudXi and GrowthQuest — free apps that solve real student problems."/>
+  <meta name="keywords" content="student apps, habit tracker app, attendance tracker, yakdevs, indie developer, student productivity"/>
+  <meta property="og:title" content="YakDevs – Smart Apps for Students"/>
+  <meta property="og:description" content="Building smart, gamified apps for students. Free on Google Play."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh; padding: 160px 64px 100px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; align-items: center;
+      position: relative; overflow: hidden;
+    }
+    .hero-deco {
+      position: absolute; right: -60px; top: 50%; transform: translateY(-54%);
+      font-family: 'DM Serif Display', serif; font-size: 34vw;
+      color: transparent; -webkit-text-stroke: 1px rgba(46,107,79,.06);
+      line-height: 1; pointer-events: none; user-select: none; z-index: 0;
+    }
+    .hero-left { position: relative; z-index: 1; }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: .73rem; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 28px;
+      opacity: 0; animation: fadeUp .8s .15s forwards;
+    }
+    .eyebrow-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s 1s infinite; }
+    h1.hero-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(3.2rem, 6.5vw, 6rem);
+      line-height: 1.0; letter-spacing: -.03em; margin-bottom: 8px;
+      opacity: 0; animation: fadeUp .9s .3s forwards;
+    }
+    h1.hero-title em { font-style: italic; color: var(--accent); }
+    h1.hero-title .outline { -webkit-text-stroke: 1.5px var(--ink); color: transparent; }
+    .hero-divider {
+      display: flex; align-items: center; gap: 16px; margin-bottom: 32px;
+      opacity: 0; animation: fadeUp .9s .45s forwards;
+    }
+    .hero-divider-line { flex: 1; height: 1px; background: var(--border); }
+    .hero-divider-text { font-size: .86rem; color: var(--muted); white-space: nowrap; }
+    .hero-desc {
+      font-size: 1.05rem; color: var(--muted); line-height: 1.8;
+      max-width: 420px; margin-bottom: 40px;
+      opacity: 0; animation: fadeUp .9s .6s forwards;
+    }
+    .hero-actions {
+      display: flex; align-items: center; gap: 20px;
+      opacity: 0; animation: fadeUp .9s .75s forwards;
+    }
+
+    /* hero card stack */
+    .hero-right {
+      position: relative; z-index: 1;
+      display: flex; justify-content: flex-end;
+      opacity: 0; animation: fadeUp 1s .85s forwards;
+    }
+    .card-stack { position: relative; width: 310px; height: 390px; }
+    .hc {
+      position: absolute; border-radius: 4px;
+      background: var(--card); border: 1px solid var(--border);
+      padding: 26px; box-shadow: 0 8px 40px rgba(0,0,0,.06);
+    }
+    .hc-back  { width: 236px; top: 14px; left: 46px; background: var(--accent-light); border-color: rgba(46,107,79,.2); transform: rotate(6deg); z-index: 0; }
+    .hc-mid   { width: 258px; top: 36px; left: 22px; transform: rotate(-3deg); z-index: 1; }
+    .hc-front { width: 282px; top: 60px; left: 0; z-index: 2; transition: transform .3s, box-shadow .3s; }
+    .hc-front:hover { transform: translateY(-10px) rotate(1deg); box-shadow: 0 24px 60px rgba(0,0,0,.12); }
+    .hc-tag  { font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+    .hc-name { font-family: 'DM Serif Display', serif; font-size: 1.65rem; letter-spacing: -.02em; margin-bottom: 8px; }
+    .hc-desc { font-size: .8rem; color: var(--muted); line-height: 1.6; }
+    .hc-foot { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .hc-status { font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+    .hc-status::before { content: ''; display: inline-block; width: 7px; height: 7px; background: var(--accent); border-radius: 50%; }
+
+    .hero-scroll {
+      position: absolute; bottom: 36px; left: 64px;
+      display: flex; align-items: center; gap: 12px;
+      font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+      opacity: 0; animation: fadeUp 1s 1.4s forwards;
+    }
+    .scroll-bar { width: 40px; height: 1px; background: var(--border); position: relative; overflow: hidden; }
+    .scroll-bar::after { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: var(--accent); animation: scrollMove 2s 2s infinite; }
+
+    /* ── TRUST BAR ── */
+    .trust { padding: 72px 64px; }
+    .trust-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; }
+    .trust-card {
+      background: var(--card); border: 1px solid var(--border);
+      padding: 30px 26px; position: relative; overflow: hidden;
+      transition: border-color .3s;
+    }
+    .trust-card::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(400px circle at var(--mx,50%) var(--my,50%), rgba(46,107,79,.05), transparent 60%);
+      opacity: 0; transition: opacity .3s; pointer-events: none;
+    }
+    .trust-card:hover::after { opacity: 1; }
+    .trust-card:hover { border-color: rgba(46,107,79,.25); }
+    .trust-icon { font-size: 1.5rem; margin-bottom: 14px; }
+    .trust-title { font-family: 'DM Serif Display', serif; font-size: 1.05rem; margin-bottom: 6px; }
+    .trust-desc { font-size: .84rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── APPS ── */
+    .apps { padding: 120px 64px; }
+    .apps-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 64px; }
+    .apps-count { font-family: 'DM Serif Display', serif; font-size: 4rem; color: var(--border); letter-spacing: -.04em; line-height: 1; }
+    .apps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .app-card {
+      background: var(--card); border: 1px solid var(--border);
+      padding: 52px 44px 44px; text-decoration: none; color: inherit;
+      display: block; position: relative; overflow: hidden;
+      transition: border-color .3s, box-shadow .3s;
+    }
+    .app-card::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(600px circle at var(--mx,50%) var(--my,50%), rgba(46,107,79,.06), transparent 60%);
+      opacity: 0; transition: opacity .3s; pointer-events: none;
+    }
+    .app-card:hover::after { opacity: 1; }
+    .app-card::before {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0); transform-origin: left; transition: transform .5s ease;
+    }
+    .app-card:hover::before { transform: scaleX(1); }
+    .app-card:hover { border-color: rgba(46,107,79,.3); box-shadow: 0 12px 48px rgba(0,0,0,.06); }
+    .app-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; }
+    .app-num { font-family: 'DM Serif Display', serif; font-size: 2.5rem; color: var(--border); letter-spacing: -.04em; line-height: 1; }
+    .app-badge { font-size: .67rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); background: var(--accent-light); padding: 5px 12px; border-radius: 100px; }
+    .app-name { font-family: 'DM Serif Display', serif; font-size: 2.6rem; letter-spacing: -.03em; line-height: 1; margin-bottom: 14px; transition: color .2s; }
+    .app-card:hover .app-name { color: var(--accent); }
+    .app-desc { font-size: .91rem; color: var(--muted); line-height: 1.75; margin-bottom: 32px; }
+    .app-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
+    .tag { font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--border); padding: 4px 11px; color: var(--muted); }
+    .app-link { display: inline-flex; align-items: center; gap: 10px; font-size: .79rem; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ink); transition: gap .2s, color .2s; }
+    .app-card:hover .app-link { gap: 16px; color: var(--accent); }
+
+    /* ── ABOUT ── */
+    .about {
+      background: var(--ink); color: var(--bg);
+      padding: 120px 64px; position: relative; overflow: hidden;
+    }
+    .about::before {
+      content: ''; position: absolute; top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(46,107,79,.14), transparent 70%);
+      pointer-events: none;
+    }
+    .about-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 100px; align-items: start; position: relative; z-index: 1; }
+    .about-label { color: #5a9e7a; }
+    .about-label::before { background: #5a9e7a; }
+    .about-big-title { font-family: 'DM Serif Display', serif; font-size: clamp(3rem,6vw,5.5rem); letter-spacing: -.04em; line-height: 1.0; }
+    .about-big-title em { font-style: italic; color: #5a9e7a; }
+    .about-big-title .outline { -webkit-text-stroke: 1.5px rgba(255,255,255,.25); color: transparent; }
+    .about-body { font-size: 1rem; line-height: 1.9; color: #a8a49e; margin-bottom: 44px; }
+    .about-body strong { color: #e8e4de; font-weight: 400; }
+    .stats { display: flex; flex-direction: column; }
+    .stat-row { display: flex; align-items: center; gap: 24px; padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,.07); }
+    .stat-row:first-child { border-top: 1px solid rgba(255,255,255,.07); }
+    .stat-num { font-family: 'DM Serif Display', serif; font-size: 1.7rem; color: #fff; min-width: 52px; }
+    .stat-text { font-size: .88rem; color: #6a6660; line-height: 1.5; }
+    .stat-text strong { color: #a8a49e; font-weight: 400; }
+
+    /* ── CONTACT ── */
+    .contact { padding: 120px 64px; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: start; }
+    .contact-left .section-title { font-size: clamp(2.2rem,4vw,3.2rem); margin-bottom: 18px; }
+    .contact-desc { font-size: .98rem; color: var(--muted); line-height: 1.8; margin-bottom: 40px; }
+    .contact-email {
+      padding: 26px 30px; border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      text-decoration: none; color: var(--ink);
+      transition: background .2s, border-color .2s, color .2s; margin-bottom: 0;
+    }
+    .contact-email:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+    .contact-email:hover .ce-label { color: rgba(255,255,255,.4); }
+    .contact-email:hover .ce-arrow { transform: translateX(6px); }
+    .ce-label { font-size: .67rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .ce-text { font-family: 'DM Serif Display', serif; font-size: 1.15rem; }
+    .ce-arrow { transition: transform .2s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; padding: 140px 20px 80px; }
+      .hero-right, .hero-deco { display: none; }
+      .hero-scroll { left: 20px; }
+      .trust, .apps, .about, .contact { padding: 72px 20px; }
+      .trust-grid { grid-template-columns: 1fr 1fr; }
+      .apps-grid { grid-template-columns: 1fr; }
+      .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+      .app-card { padding: 36px 22px; }
+      .apps-header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">yak<span>devs</span></a>
+  <ul class="nav-links">
+    <li><a href="#apps">Apps</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Get in touch</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-deco">Y</div>
+  <div class="hero-left">
+    <div class="hero-eyebrow"><div class="eyebrow-dot"></div>Indie app developer · Open to work</div>
+    <h1 class="hero-title">Building<br><em>smart apps</em><br><span class="outline">for students.</span></h1>
+    <div class="hero-divider">
+      <div class="hero-divider-line"></div>
+      <span class="hero-divider-text">yakdevs — indie app developer</span>
+    </div>
+    <p class="hero-desc">Gamified habit trackers. Smart attendance tools. Real student problems solved simply — and for free.</p>
+    <div class="hero-actions">
+      <a href="#apps" class="btn-primary">Explore Apps
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#about" class="btn-ghost">About me
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="card-stack">
+      <div class="hc hc-back"></div>
+      <div class="hc hc-mid">
+        <div class="hc-tag">App 02</div>
+        <div class="hc-name">GrowthQuest</div>
+        <div class="hc-desc">Level up your habits every day.</div>
+      </div>
+      <div class="hc hc-front">
+        <div class="hc-tag">App 01</div>
+        <div class="hc-name">StudXi</div>
+        <div class="hc-desc">Know exactly how many classes you can skip. Smart attendance tracking for students.</div>
+        <div class="hc-foot">
+          <div class="hc-status">Live on Play Store</div>
+          <span style="font-size:.7rem;color:var(--muted)">studxi.app</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll"><div class="scroll-bar"></div>Scroll to explore</div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track" id="marquee">
+    <div class="marquee-item"><span>StudXi</span><div class="marquee-sep"></div></div>
+    <div class="marquee-item">Smart Attendance Tracker<div class="marquee-sep"></div></div>
+    <div class="marquee-item"><span>GrowthQuest</span><div class="marquee-sep"></div></div>
+    <div class="marquee-item">Gamified Habit Tracker<div class="marquee-sep"></div></div>
+    <div class="marquee-item"><span>yakdevs</span><div class="marquee-sep"></div></div>
+    <div class="marquee-item">Building for students<div class="marquee-sep"></div></div>
+  </div>
+</div>
+
+<!-- TRUST -->
+<section class="trust">
+  <div class="trust-grid">
+    <div class="trust-card reveal" data-radial>
+      <div class="trust-icon">🎓</div>
+      <h3 class="trust-title">Built for Students</h3>
+      <p class="trust-desc">Every app solves a real problem students face every single day.</p>
+    </div>
+    <div class="trust-card reveal rd1" data-radial>
+      <div class="trust-icon">🔒</div>
+      <h3 class="trust-title">Privacy Focused</h3>
+      <p class="trust-desc">Your data stays on your device. No accounts. No tracking.</p>
+    </div>
+    <div class="trust-card reveal rd2" data-radial>
+      <div class="trust-icon">⚡</div>
+      <h3 class="trust-title">100% Free</h3>
+      <p class="trust-desc">No subscriptions. No paywalls. Free to use, forever.</p>
+    </div>
+    <div class="trust-card reveal rd3" data-radial>
+      <div class="trust-icon">📱</div>
+      <h3 class="trust-title">Live on Play Store</h3>
+      <p class="trust-desc">Both apps are live and available to download right now.</p>
+    </div>
+  </div>
+</section>
+
+<!-- APPS -->
+<section class="apps" id="apps">
+  <div class="apps-header reveal">
+    <div>
+      <div class="section-label">My Apps</div>
+      <h2 class="section-title">Things I've shipped.</h2>
+    </div>
+    <div class="apps-count">02</div>
+  </div>
+  <div class="apps-grid">
+    <a href="studxi.html" class="app-card reveal" data-radial aria-label="Open StudXi app page">
+      <div class="app-top">
+        <div class="app-num">01</div>
+        <div class="app-badge">Live on Play Store</div>
+      </div>
+      <h3 class="app-name">StudXi</h3>
+      <p class="app-desc">Smart attendance tracker with bunk calculator. Know exactly how many classes you can skip without falling below your limit.</p>
+      <div class="app-tags">
+        <span class="tag">Attendance</span>
+        <span class="tag">Bunk Calculator</span>
+        <span class="tag">Timetable</span>
+      </div>
+      <div class="app-link">View App
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </a>
+    <a href="growthquest.html" class="app-card reveal rd2" data-radial aria-label="Open GrowthQuest app page">
+      <div class="app-top">
+        <div class="app-num">02</div>
+        <div class="app-badge">Live on Play Store</div>
+      </div>
+      <h3 class="app-name">GrowthQuest</h3>
+      <p class="app-desc">Gamified habit tracker with XP and levels. Turn daily habits into an RPG progression system with real consequences for skipping.</p>
+      <div class="app-tags">
+        <span class="tag">Habits</span>
+        <span class="tag">XP System</span>
+        <span class="tag">Gamified</span>
+      </div>
+      <div class="app-link">View App
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-grid">
+    <div class="reveal">
+      <div class="section-label about-label">About me</div>
+      <h2 class="about-big-title">Student.<br><em>Builder.</em><br><span class="outline">Learner.</span></h2>
+    </div>
+    <div class="reveal rd2">
+      <p class="about-body">Hey — I'm <strong>yakdevs</strong>. I'm a student who built these apps because the tools I needed didn't exist. StudXi came from needing to track my attendance. GrowthQuest came from wanting to actually stick to habits.<br><br>Just me — one student building apps to solve real problems, learning in public, and shipping things I'm proud of.</p>
+      <div class="stats">
+        <div class="stat-row">
+          <div class="stat-num">2</div>
+          <div class="stat-text"><strong>Apps live</strong> on Google Play for real users.</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-num">100%</div>
+          <div class="stat-text"><strong>Free forever.</strong> No subscriptions ever.</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-num">1</div>
+          <div class="stat-text"><strong>Developer</strong> doing design, code, and shipping.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-grid">
+    <div class="reveal">
+      <div class="section-label">Contact</div>
+      <h2 class="section-title">Let's talk.</h2>
+      <p class="contact-desc">Feedback on my apps, a collab idea, or just want to say hi? I'd love to hear from you.</p>
+      <a href="mailto:yakdevidk@gmail.com" class="contact-email">
+        <div>
+          <div class="ce-label">Email me at</div>
+          <div class="ce-text">yakdevidk@gmail.com</div>
+        </div>
+        <svg class="ce-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+    <div class="reveal rd2">
+      <div class="form-row">
+        <div class="field"><label for="name">Name</label><input id="name" type="text" placeholder="Your name"/></div>
+        <div class="field"><label for="email">Email</label><input id="email" type="email" placeholder="your@email.com"/></div>
+      </div>
+      <div class="form-row">
+        <div class="field field-full"><label for="subject">Subject</label><input id="subject" type="text" placeholder="What's this about?"/></div>
+      </div>
+      <div class="form-row">
+        <div class="field field-full"><label for="msg">Message</label><textarea id="msg" rows="5" placeholder="What's on your mind?"></textarea></div>
+      </div>
+      <div class="form-footer">
+        <span class="form-note">I'll reply within 24h ✦</span>
+        <button class="btn-send">Send message
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">yak<span>devs</span></div>
+  <div class="footer-links">
+    <a href="studxi.html" class="footer-link">StudXi</a>
+    <a href="growthquest.html" class="footer-link">GrowthQuest</a>
+    <a href="privacy-policy.html" class="footer-link">StudXi Privacy</a>
+    <a href="growthquest-privacy.html" class="footer-link">GrowthQuest Privacy</a>
+  </div>
+  <span class="footer-copy">© 2026 yakdevs · Built by a student, for students.</span>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>

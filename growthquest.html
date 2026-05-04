@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gamified Habit Tracker App | GrowthQuest</title>
+  <meta name="description" content="Track habits with XP, levels, and streaks. Build real discipline with GrowthQuest — the gamified habit tracker that creates consequences for missing habits. Free on Google Play."/>
+  <meta name="keywords" content="habit tracker app, gamified habits, XP habit tracker, streak app, GrowthQuest, discipline app, self improvement, student productivity app"/>
+  <meta property="og:title" content="GrowthQuest – Gamified Habit Tracker"/>
+  <meta property="og:description" content="Turn daily habits into an RPG progression. Gain XP, level up, build streaks."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ── GROWTHQUEST PAGE STYLES ── */
+    .app-hero {
+      min-height: 100vh; padding: 140px 64px 80px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+      position: relative; overflow: hidden;
+    }
+    .deco { position: absolute; right: -40px; top: 50%; transform: translateY(-52%); font-family: 'DM Serif Display', serif; font-size: 40vw; color: transparent; -webkit-text-stroke: 1px rgba(46,107,79,.05); line-height: 1; pointer-events: none; user-select: none; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: .73rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent2); margin-bottom: 22px; opacity: 0; animation: fadeUp .8s .2s forwards; }
+    .eyebrow-dot { width: 6px; height: 6px; background: var(--accent2); border-radius: 50%; animation: pulse 2s infinite; }
+    h1.app-title { font-family: 'DM Serif Display', serif; font-size: clamp(2.8rem,6vw,5.8rem); line-height: .95; letter-spacing: -.04em; margin-bottom: 20px; opacity: 0; animation: fadeUp .9s .3s forwards; }
+    h1.app-title em { font-style: italic; color: var(--accent); }
+    .app-sub { font-size: 1.1rem; color: var(--muted); line-height: 1.75; max-width: 440px; margin-bottom: 40px; opacity: 0; animation: fadeUp .9s .45s forwards; }
+    .app-actions { display: flex; align-items: center; gap: 18px; opacity: 0; animation: fadeUp .9s .6s forwards; }
+    .hero-phone { position: relative; z-index: 1; display: flex; justify-content: center; align-items: center; opacity: 0; animation: fadeUp 1s .75s forwards; }
+
+    /* GrowthQuest phone screen */
+    .gq-screen { background: #221a0e; border-radius: 20px; padding: 18px; min-height: 360px; }
+    .gq-bar-labels { display: flex; justify-content: space-between; font-size: .62rem; color: rgba(255,255,255,.3); margin-bottom: 5px; }
+    .gq-bar { height: 6px; background: rgba(255,255,255,.08); border-radius: 3px; overflow: hidden; margin-bottom: 14px; }
+    .gq-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 3px; width: 0; transition: width 1.2s 1s ease; }
+    .gq-level { display: flex; align-items: baseline; gap: 8px; margin-bottom: 16px; }
+    .gq-level-num { font-family: 'DM Serif Display', serif; font-size: 2.8rem; color: #fff; line-height: 1; letter-spacing: -.04em; }
+    .gq-level-lbl { font-size: .68rem; color: rgba(255,255,255,.3); letter-spacing: .06em; text-transform: uppercase; }
+    .gq-habits { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+    .gq-habit { display: flex; align-items: center; gap: 9px; background: rgba(255,255,255,.04); border-radius: 9px; padding: 9px 11px; }
+    .gq-check { width: 19px; height: 19px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .62rem; flex-shrink: 0; }
+    .gq-check.done { background: rgba(46,107,79,.25); color: var(--accent); }
+    .gq-check.pend { border: 1.5px solid rgba(255,255,255,.1); }
+    .gq-hname { flex: 1; font-size: .76rem; color: rgba(255,255,255,.55); }
+    .gq-hxp { font-size: .66rem; font-weight: 600; color: var(--accent2); }
+    .gq-streak { background: rgba(200,181,96,.08); border: 1px solid rgba(200,181,96,.15); border-radius: 9px; padding: 11px 13px; display: flex; justify-content: space-between; align-items: center; }
+    .gq-streak-lbl { font-size: .62rem; letter-spacing: .06em; text-transform: uppercase; color: rgba(200,181,96,.55); }
+    .gq-streak-val { font-family: 'DM Serif Display', serif; font-size: 1.35rem; color: var(--accent2); line-height: 1; }
+
+    /* page sections */
+    .psec { padding: 100px 64px; }
+    .psec-alt { background: var(--card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .psec-inner { max-width: 1000px; margin: 0 auto; }
+
+    /* value prop */
+    .val-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; margin-top: 44px; }
+    .val-card { background: var(--card); border: 1px solid var(--border); padding: 32px 26px; transition: border-color .2s; }
+    .val-card:hover { border-color: rgba(46,107,79,.3); }
+    .val-icon { font-size: 1.7rem; margin-bottom: 14px; }
+    .val-title { font-family: 'DM Serif Display', serif; font-size: 1.1rem; margin-bottom: 8px; }
+    .val-desc { font-size: .86rem; color: var(--muted); line-height: 1.7; }
+
+    /* levels */
+    .levels-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 36px; }
+    .lv { display: flex; flex-direction: column; align-items: center; gap: 5px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; flex: 1; min-width: 80px; transition: border-color .2s; }
+    .lv:hover { border-color: rgba(46,107,79,.3); }
+    .lv-emoji { font-size: 1.35rem; }
+    .lv-name { font-family: 'DM Serif Display', serif; font-size: .82rem; color: var(--ink); }
+    .lv-range { font-size: .62rem; color: var(--muted); }
+
+    /* features */
+    .feat-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 2px; margin-top: 44px; }
+    .feat { background: var(--card); border: 1px solid var(--border); padding: 26px; display: flex; gap: 14px; align-items: flex-start; transition: border-color .2s; }
+    .feat:hover { border-color: rgba(46,107,79,.3); }
+    .feat-ic { width: 34px; height: 34px; background: var(--accent-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: .88rem; flex-shrink: 0; }
+    .feat-title { font-family: 'DM Serif Display', serif; font-size: .98rem; margin-bottom: 4px; }
+    .feat-desc { font-size: .84rem; color: var(--muted); line-height: 1.6; }
+
+    /* diff */
+    .diff { background: var(--ink); color: var(--bg); padding: 44px; margin-top: 44px; }
+    .diff h3 { font-family: 'DM Serif Display', serif; font-size: 1.5rem; letter-spacing: -.02em; margin-bottom: 14px; color: var(--accent2); }
+    .diff p { font-size: .97rem; color: #a8a49e; line-height: 1.85; }
+    .free-note { display: flex; align-items: center; gap: 10px; background: var(--accent-light); border: 1px solid rgba(46,107,79,.2); padding: 14px 18px; margin-top: 28px; font-size: .88rem; color: var(--accent); }
+
+    /* cta */
+    .cta { padding: 100px 64px; text-align: center; border-top: 1px solid var(--border); }
+    .cta h2 { font-family: 'DM Serif Display', serif; font-size: clamp(2.2rem,4vw,3.5rem); letter-spacing: -.03em; margin-bottom: 14px; }
+    .cta p { font-size: .98rem; color: var(--muted); margin-bottom: 36px; }
+
+    @media (max-width: 900px) {
+      .app-hero { grid-template-columns: 1fr; padding: 130px 20px 70px; }
+      .hero-phone, .deco { display: none; }
+      .psec, .cta { padding: 72px 20px; }
+      .val-grid, .feat-grid { grid-template-columns: 1fr; }
+      .levels-row { gap: 5px; }
+      .lv { min-width: 68px; padding: 10px 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">yak<span>devs</span></a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#levels">Levels</a></li>
+    <li><a href="studxi.html">StudXi</a></li>
+  </ul>
+  <a href="https://play.google.com/store/apps/details?id=com.growthquest.app" target="_blank" class="nav-cta">Download Free</a>
+</nav>
+
+<!-- HERO -->
+<section class="app-hero">
+  <div class="deco">G</div>
+  <div style="position:relative;z-index:1">
+    <div class="eyebrow"><div class="eyebrow-dot"></div>App 02 · Gamified Habit Tracker</div>
+    <h1 class="app-title">Growth<em>Quest</em><br>Gamified<br>Habits.</h1>
+    <p class="app-sub">Turn daily habits into an RPG progression system. Gain XP, level up, build streaks — with real consequences for skipping.</p>
+    <div class="app-actions">
+      <a href="https://play.google.com/store/apps/details?id=com.growthquest.app" target="_blank" class="btn-play">
+        <div class="btn-play-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M3.18 23.36C1.98 22.7 1 21.14 1 19.8V4.2C1 2.86 1.98 1.3 3.18.64l16.36 11.36L3.18 23.36z"/></svg></div>
+        <div class="btn-play-text"><span class="btn-play-label">Download on</span><span class="btn-play-store">Google Play</span></div>
+      </a>
+      <a href="#features" class="btn-outline">See Features</a>
+    </div>
+  </div>
+  <div class="hero-phone">
+    <div class="phone" style="background:#1a1208">
+      <div class="phone-notch" style="background:#0a0800"></div>
+      <div class="gq-screen">
+        <div class="gq-bar-labels"><span>XP Progress</span><span>720 / 1000</span></div>
+        <div class="gq-bar"><div class="gq-bar-fill" id="xpFill"></div></div>
+        <div class="gq-level"><div class="gq-level-num">14</div><div class="gq-level-lbl">Warrior<br>Level</div></div>
+        <div class="gq-habits">
+          <div class="gq-habit"><div class="gq-check done">✓</div><span class="gq-hname">Morning Workout</span><span class="gq-hxp">+50 XP</span></div>
+          <div class="gq-habit"><div class="gq-check done">✓</div><span class="gq-hname">Read 20 pages</span><span class="gq-hxp">+30 XP</span></div>
+          <div class="gq-habit"><div class="gq-check pend"></div><span class="gq-hname">No social media</span><span class="gq-hxp">+40 XP</span></div>
+          <div class="gq-habit"><div class="gq-check pend"></div><span class="gq-hname">Meditate 10 min</span><span class="gq-hxp">+20 XP</span></div>
+        </div>
+        <div class="gq-streak"><span class="gq-streak-lbl">🔥 Streak</span><span class="gq-streak-val">21 days</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUE PROP -->
+<section class="psec psec-alt">
+  <div class="psec-inner">
+    <div class="reveal">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-title">Growth with real consequences.</h2>
+    </div>
+    <div class="val-grid">
+      <div class="val-card reveal rd1"><div class="val-icon">⬆️</div><h3 class="val-title">Complete → Gain XP</h3><p class="val-desc">Every habit you complete earns XP. Streaks multiply your gains. Stay consistent and your level climbs fast.</p></div>
+      <div class="val-card reveal rd2"><div class="val-icon">⬇️</div><h3 class="val-title">Skip → Lose XP</h3><p class="val-desc">Missing habits costs you XP. Real consequences create real motivation to show up — even on hard days.</p></div>
+      <div class="val-card reveal rd3"><div class="val-icon">🏆</div><h3 class="val-title">Level Up → Earn Badges</h3><p class="val-desc">Progress through 8 levels from Seed to Legend. Unlock mastery badges as your consistency builds.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- LEVELS -->
+<section class="psec" id="levels">
+  <div class="psec-inner">
+    <div class="reveal">
+      <div class="section-label">Level System</div>
+      <h2 class="section-title">From Seed to Legend.</h2>
+      <p style="font-size:.97rem;color:var(--muted);line-height:1.8;margin-top:10px;max-width:480px">8 progression tiers that reflect your real growth. Every level up proves you showed up.</p>
+    </div>
+    <div class="levels-row">
+      <div class="lv reveal rd1"><div class="lv-emoji">🌱</div><div class="lv-name">Seed</div><div class="lv-range">Lv 1–2</div></div>
+      <div class="lv reveal rd1"><div class="lv-emoji">🌿</div><div class="lv-name">Sprout</div><div class="lv-range">Lv 3–4</div></div>
+      <div class="lv reveal rd2"><div class="lv-emoji">⚔️</div><div class="lv-name">Warrior</div><div class="lv-range">Lv 5–7</div></div>
+      <div class="lv reveal rd2"><div class="lv-emoji">🔥</div><div class="lv-name">Champion</div><div class="lv-range">Lv 8–10</div></div>
+      <div class="lv reveal rd3"><div class="lv-emoji">💎</div><div class="lv-name">Master</div><div class="lv-range">Lv 11–15</div></div>
+      <div class="lv reveal rd3"><div class="lv-emoji">👑</div><div class="lv-name">Legend</div><div class="lv-range">Lv 16+</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="psec psec-alt" id="features">
+  <div class="psec-inner">
+    <div class="reveal">
+      <div class="section-label">Features</div>
+      <h2 class="section-title">Built to build discipline.</h2>
+    </div>
+    <div class="feat-grid">
+      <div class="feat reveal rd1"><div class="feat-ic">⚡</div><div><h3 class="feat-title">XP System</h3><p class="feat-desc">Earn XP for every completed habit. Lose XP for skipping. Progress is earned, not given.</p></div></div>
+      <div class="feat reveal rd2"><div class="feat-ic">🔥</div><div><h3 class="feat-title">Streak Multiplier</h3><p class="feat-desc">Longer streaks multiply your XP gains. Stay consistent and the rewards compound.</p></div></div>
+      <div class="feat reveal rd1"><div class="feat-ic">🏅</div><div><h3 class="feat-title">Mastery Badges</h3><p class="feat-desc">Unlock badges at milestones. A visual record of everything you've earned.</p></div></div>
+      <div class="feat reveal rd2"><div class="feat-ic">🛡️</div><div><h3 class="feat-title">Streak Recovery</h3><p class="feat-desc">Miss a day? Use a streak shield to protect your progress. Use them wisely — they're limited.</p></div></div>
+      <div class="feat reveal rd1"><div class="feat-ic">📱</div><div><h3 class="feat-title">Home Widgets</h3><p class="feat-desc">Check your streak and XP from your home screen. No excuse to forget.</p></div></div>
+      <div class="feat reveal rd2"><div class="feat-ic">🗓️</div><div><h3 class="feat-title">Habit Heatmap</h3><p class="feat-desc">Visual calendar of your wins and misses. See your consistency pattern at a glance.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DIFFERENTIATION -->
+<section class="psec">
+  <div class="psec-inner">
+    <div class="reveal">
+      <div class="section-label">Why GrowthQuest</div>
+      <h2 class="section-title">Not just another checkbox app.</h2>
+    </div>
+    <div class="diff reveal rd1">
+      <h3>Real consequences change behavior</h3>
+      <p>Most habit apps let you tick a box and move on. GrowthQuest is different — when missing a habit costs you XP and threatens your level, you think twice. That psychological weight is what makes this actually work, where every other app fails after week two.</p>
+    </div>
+    <div class="free-note reveal rd2">💡 Free to use · Supported by ads · No subscriptions, ever</div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="section-label center">Start Today</div>
+  <h2>Start building<br>discipline.</h2>
+  <p>Download free on Google Play. No account needed.</p>
+  <a href="https://play.google.com/store/apps/details?id=com.growthquest.app" target="_blank" class="btn-play" style="display:inline-flex">
+    <div class="btn-play-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M3.18 23.36C1.98 22.7 1 21.14 1 19.8V4.2C1 2.86 1.98 1.3 3.18.64l16.36 11.36L3.18 23.36z"/></svg></div>
+    <div class="btn-play-text"><span class="btn-play-label">Download on</span><span class="btn-play-store">Google Play</span></div>
+  </a>
+</section>
+
+<footer>
+  <div class="footer-logo">Growth<span>Quest</span></div>
+  <div class="footer-links">
+    <a href="index.html" class="footer-link">← yakdevs</a>
+    <a href="studxi.html" class="footer-link">StudXi</a>
+    <a href="growthquest-privacy.html" class="footer-link">Privacy Policy</a>
+  </div>
+  <span class="footer-copy">© 2026 yakdevs</span>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Attendance Tracker for Students | StudXi</title>
+  <meta name="description" content="StudXi is a smart attendance tracker and bunk calculator for students. Know exactly how many classes you can skip. Free on Google Play."/>
+  <meta name="keywords" content="attendance tracker, bunk calculator, student app, timetable, StudXi, attendance percentage, student productivity app"/>
+  <meta property="og:title" content="StudXi – Smart Attendance Tracker for Students"/>
+  <meta property="og:description" content="Know exactly how many classes you can skip. Free attendance tracker app for students."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ── STUDXI PAGE STYLES ── */
+    .app-hero {
+      min-height: 100vh; padding: 140px 64px 80px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+      position: relative; overflow: hidden;
+    }
+    .deco { position: absolute; right: -40px; top: 50%; transform: translateY(-52%); font-family: 'DM Serif Display', serif; font-size: 40vw; color: transparent; -webkit-text-stroke: 1px rgba(46,107,79,.05); line-height: 1; pointer-events: none; user-select: none; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: .73rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 22px; opacity: 0; animation: fadeUp .8s .2s forwards; }
+    .eyebrow-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+    h1.app-title { font-family: 'DM Serif Display', serif; font-size: clamp(3rem,7vw,6.5rem); line-height: .95; letter-spacing: -.04em; margin-bottom: 20px; opacity: 0; animation: fadeUp .9s .3s forwards; }
+    h1.app-title em { font-style: italic; color: var(--accent); }
+    .app-sub { font-size: 1.1rem; color: var(--muted); line-height: 1.75; max-width: 440px; margin-bottom: 40px; opacity: 0; animation: fadeUp .9s .45s forwards; }
+    .app-actions { display: flex; align-items: center; gap: 18px; opacity: 0; animation: fadeUp .9s .6s forwards; }
+    .hero-phone { position: relative; z-index: 1; display: flex; justify-content: center; align-items: center; opacity: 0; animation: fadeUp 1s .75s forwards; }
+
+    /* StudXi phone screen */
+    .sx-screen { background: #f0f4ff; border-radius: 20px; padding: 18px; min-height: 360px; }
+    .sx-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .sx-title { font-weight: 600; font-size: .88rem; color: #1e293b; }
+    .sx-ring { width: 76px; height: 76px; border-radius: 50%; border: 6px solid #dcfce7; border-top-color: var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
+    .sx-pct { font-size: 1.7rem; font-weight: 800; color: var(--accent); line-height: 1; }
+    .sx-safe { background: #dcfce7; border-radius: 8px; padding: 8px 12px; font-size: .76rem; color: #16a34a; font-weight: 500; margin-bottom: 14px; }
+    .sx-sub { background: #fff; border-radius: 10px; padding: 10px 12px; margin-bottom: 7px; display: flex; justify-content: space-between; align-items: center; }
+    .sx-sub-name { font-size: .78rem; font-weight: 500; color: #1e293b; }
+    .sx-sub-bunk { font-size: .62rem; color: #16a34a; }
+    .sx-sub-pct { font-size: .73rem; color: var(--accent); font-weight: 600; }
+    .sx-nav { display: flex; justify-content: space-around; margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--border); }
+    .sx-nav-i { font-size: .58rem; color: var(--muted); text-align: center; }
+    .sx-nav-i.active { color: var(--accent); }
+
+    /* shared page section */
+    .psec { padding: 100px 64px; }
+    .psec-alt { background: var(--card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+
+    /* problem / solution */
+    .prob-box { background: var(--ink); color: var(--bg); padding: 36px; margin-top: 28px; }
+    .prob-box h3 { font-family: 'DM Serif Display', serif; font-size: 1.25rem; margin-bottom: 10px; }
+    .prob-box p { font-size: .9rem; color: #a8a49e; line-height: 1.8; }
+    .sol-box { background: var(--accent-light); border: 1px solid rgba(46,107,79,.2); padding: 36px; margin-top: 28px; }
+    .sol-box h3 { font-family: 'DM Serif Display', serif; font-size: 1.25rem; margin-bottom: 10px; color: var(--accent); }
+    .sol-box p { font-size: .9rem; color: var(--muted); line-height: 1.8; }
+
+    /* features */
+    .feat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; margin-top: 48px; }
+    .feat { background: var(--card); border: 1px solid var(--border); padding: 28px 24px; transition: border-color .2s; }
+    .feat:hover { border-color: rgba(46,107,79,.3); }
+    .feat-icon { font-size: 1.4rem; margin-bottom: 14px; }
+    .feat-title { font-family: 'DM Serif Display', serif; font-size: 1.05rem; margin-bottom: 7px; }
+    .feat-desc { font-size: .85rem; color: var(--muted); line-height: 1.7; }
+
+    /* emotional */
+    .emo-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; margin-top: 44px; }
+    .emo { background: var(--ink); color: var(--bg); padding: 36px 28px; }
+    .emo-icon { font-size: 1.9rem; margin-bottom: 14px; }
+    .emo-title { font-family: 'DM Serif Display', serif; font-size: 1.2rem; margin-bottom: 8px; }
+    .emo-desc { font-size: .86rem; color: #7a7670; line-height: 1.7; }
+
+    /* privacy */
+    .priv-sec { padding: 100px 64px; background: var(--accent-light); }
+    .priv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; max-width: 1000px; margin: 0 auto; }
+    .priv-points { display: flex; flex-direction: column; gap: 14px; }
+    .priv-point { display: flex; align-items: center; gap: 10px; font-size: .91rem; color: var(--ink); }
+    .priv-point::before { content: '🔒'; }
+
+    /* cta */
+    .cta { padding: 100px 64px; text-align: center; border-top: 1px solid var(--border); }
+    .cta h2 { font-family: 'DM Serif Display', serif; font-size: clamp(2.2rem,4vw,3.5rem); letter-spacing: -.03em; margin-bottom: 14px; }
+    .cta p { font-size: .98rem; color: var(--muted); margin-bottom: 36px; }
+
+    @media (max-width: 900px) {
+      .app-hero { grid-template-columns: 1fr; padding: 130px 20px 70px; }
+      .hero-phone, .deco { display: none; }
+      .psec, .priv-sec, .cta { padding: 72px 20px; }
+      .feat-grid, .emo-grid { grid-template-columns: 1fr; }
+      .two-col, .priv-grid { grid-template-columns: 1fr; gap: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">yak<span>devs</span></a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#privacy">Privacy</a></li>
+    <li><a href="growthquest.html">GrowthQuest</a></li>
+  </ul>
+  <a href="https://play.google.com/store/apps/details?id=com.vkdev.studxi" target="_blank" class="nav-cta">Download Free</a>
+</nav>
+
+<!-- HERO -->
+<section class="app-hero">
+  <div class="deco">S</div>
+  <div style="position:relative;z-index:1">
+    <div class="eyebrow"><div class="eyebrow-dot"></div>App 01 · Attendance Tracker · Student Productivity</div>
+    <h1 class="app-title">Stud<em>Xi</em><br>Smart<br>Tracker.</h1>
+    <p class="app-sub">Know exactly how many classes you can skip. Smart attendance tracking with instant bunk calculation for students.</p>
+    <div class="app-actions">
+      <a href="https://play.google.com/store/apps/details?id=com.vkdev.studxi" target="_blank" class="btn-play">
+        <div class="btn-play-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M3.18 23.36C1.98 22.7 1 21.14 1 19.8V4.2C1 2.86 1.98 1.3 3.18.64l16.36 11.36L3.18 23.36z"/></svg></div>
+        <div class="btn-play-text"><span class="btn-play-label">Download on</span><span class="btn-play-store">Google Play</span></div>
+      </a>
+      <a href="#features" class="btn-outline">See Features</a>
+    </div>
+  </div>
+  <div class="hero-phone">
+    <div class="phone">
+      <div class="phone-notch"></div>
+      <div class="sx-screen">
+        <div class="sx-header"><span class="sx-title">Attendance Tracker</span></div>
+        <div class="sx-ring"><div class="sx-pct">88%</div></div>
+        <div class="sx-safe">✓ Safe to bunk 16 classes</div>
+        <div class="sx-sub"><div><div class="sx-sub-name">Mathematics</div><div class="sx-sub-bunk">Safe to bunk 6</div></div><div class="sx-sub-pct">92.6%</div></div>
+        <div class="sx-sub"><div><div class="sx-sub-name">Physics</div><div class="sx-sub-bunk">Safe to bunk 2</div></div><div class="sx-sub-pct">81.8%</div></div>
+        <div class="sx-sub"><div><div class="sx-sub-name">English</div><div class="sx-sub-bunk">⚠ Attend next 3</div></div><div class="sx-sub-pct">74.0%</div></div>
+        <div class="sx-nav">
+          <div class="sx-nav-i">Home</div>
+          <div class="sx-nav-i active">Attend</div>
+          <div class="sx-nav-i">Tasks</div>
+          <div class="sx-nav-i">Study</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM / SOLUTION -->
+<section class="psec psec-alt">
+  <div class="two-col" style="max-width:1000px;margin:0 auto">
+    <div class="reveal">
+      <div class="section-label">The Problem</div>
+      <h2 class="section-title">Students don't know their attendance limits.</h2>
+      <div class="prob-box">
+        <h3>The struggle is real</h3>
+        <p>Most students only find out they've crossed the limit when it's too late — when they're barred from exams or facing detention. No easy way to track it per subject.</p>
+      </div>
+    </div>
+    <div class="reveal rd2">
+      <div class="section-label">The Solution</div>
+      <h2 class="section-title">Instant calculation. Always accurate.</h2>
+      <div class="sol-box">
+        <h3>StudXi tells you exactly</h3>
+        <p>Enter your attendance once. StudXi instantly calculates how many classes you can safely skip per subject. Updates every time you mark present or absent.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="psec" id="features" style="max-width:1100px;margin:0 auto;padding-left:64px;padding-right:64px">
+  <div class="reveal">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">Everything you need to stay on track.</h2>
+  </div>
+  <div class="feat-grid">
+    <div class="feat reveal rd1"><div class="feat-icon">📊</div><h3 class="feat-title">Attendance Tracking</h3><p class="feat-desc">Track attendance subject-by-subject. See your percentage update in real time with every mark.</p></div>
+    <div class="feat reveal rd2"><div class="feat-icon">🧮</div><h3 class="feat-title">Bunk Calculator</h3><p class="feat-desc">Instantly know how many classes you can safely skip per subject without hitting the limit.</p></div>
+    <div class="feat reveal rd3"><div class="feat-icon">🔮</div><h3 class="feat-title">"What If" Prediction</h3><p class="feat-desc">See what happens to your percentage if you skip today. Make smarter decisions before you bunk.</p></div>
+    <div class="feat reveal rd1"><div class="feat-icon">📅</div><h3 class="feat-title">Weekly Timetable</h3><p class="feat-desc">Plan your week with a clean timetable view. Never miss a class because you forgot the schedule.</p></div>
+    <div class="feat reveal rd2"><div class="feat-icon">⏰</div><h3 class="feat-title">Exam Countdown</h3><p class="feat-desc">Add upcoming exams and see a live countdown. No more surprise test stress.</p></div>
+    <div class="feat reveal rd3"><div class="feat-icon">🔔</div><h3 class="feat-title">Notifications</h3><p class="feat-desc">Get reminded to mark attendance after each class. Local — no internet needed.</p></div>
+  </div>
+</section>
+
+<!-- EMOTIONAL -->
+<section class="psec psec-alt">
+  <div style="max-width:1100px;margin:0 auto">
+    <div class="reveal">
+      <div class="section-label">Why It Matters</div>
+      <h2 class="section-title">Take back control of your academic life.</h2>
+    </div>
+    <div class="emo-grid">
+      <div class="emo reveal rd1"><div class="emo-icon">😌</div><h3 class="emo-title">Avoid Detention</h3><p class="emo-desc">Never be surprised by a shortage. Know your limits before it becomes a problem.</p></div>
+      <div class="emo reveal rd2"><div class="emo-icon">🧘</div><h3 class="emo-title">Reduce Stress</h3><p class="emo-desc">Stop guessing. When you know exactly where you stand, you can relax and focus.</p></div>
+      <div class="emo reveal rd3"><div class="emo-icon">🎯</div><h3 class="emo-title">Stay in Control</h3><p class="emo-desc">You decide when to attend and when to skip — with real data to back your choice.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRIVACY -->
+<section class="priv-sec" id="privacy">
+  <div class="priv-grid">
+    <div class="reveal">
+      <div class="section-label">Privacy</div>
+      <h2 class="section-title">Your data never leaves your phone.</h2>
+      <p style="font-size:.97rem;color:var(--muted);line-height:1.8;margin-top:14px;margin-bottom:26px">StudXi stores everything locally. No login. No account. No server. Just you and your data.</p>
+      <a href="privacy-policy.html" class="btn-primary">View Privacy Policy
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+    <div class="priv-points reveal rd2">
+      <div class="priv-point">No login or account required</div>
+      <div class="priv-point">All data stored locally on device</div>
+      <div class="priv-point">No personal data collected</div>
+      <div class="priv-point">Works completely offline</div>
+      <div class="priv-point">Delete data anytime from settings</div>
+      <div class="priv-point">Uninstalling removes all data</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="section-label center">Download Free</div>
+  <h2>Stop guessing.<br>Start knowing.</h2>
+  <p>Free on Google Play. No account needed. Works offline.</p>
+  <a href="https://play.google.com/store/apps/details?id=com.vkdev.studxi" target="_blank" class="btn-play" style="display:inline-flex">
+    <div class="btn-play-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M3.18 23.36C1.98 22.7 1 21.14 1 19.8V4.2C1 2.86 1.98 1.3 3.18.64l16.36 11.36L3.18 23.36z"/></svg></div>
+    <div class="btn-play-text"><span class="btn-play-label">Download on</span><span class="btn-play-store">Google Play</span></div>
+  </a>
+</section>
+
+<footer>
+  <div class="footer-logo">Stud<span>Xi</span></div>
+  <div class="footer-links">
+    <a href="index.html" class="footer-link">← yakdevs</a>
+    <a href="growthquest.html" class="footer-link">GrowthQuest</a>
+    <a href="privacy-policy.html" class="footer-link">Privacy Policy</a>
+  </div>
+  <span class="footer-copy">© 2026 yakdevs</span>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
